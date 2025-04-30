@@ -1,72 +1,152 @@
+
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { 
-  WashingMachine, 
-  Wind, 
-  Clock, 
-  DollarSign, 
-  Wifi, 
-  CreditCard, 
-  MapPin,
-  Phone,
-  Mail,
-  Check
+  HandCoins, 
+  Users, 
+  Heart, 
+  Award, 
+  HandHeart, 
+  Gift, 
+  FolderPlus
 } from 'lucide-react';
 
-const ServiceCard = ({ icon: Icon, title, description }: { 
+const FeatureCard = ({ icon: Icon, title, description }: { 
   icon: React.ElementType, 
   title: string, 
   description: string 
 }) => (
-  <Card className="service-card">
-    <CardContent className="p-6">
-      <Icon className="h-10 w-10 text-laundry-500 mb-4" />
+  <Card className="feature-card h-full">
+    <CardContent className="p-6 flex flex-col h-full">
+      <Icon className="h-10 w-10 text-primary mb-4" />
       <h3 className="text-xl font-semibold mb-2">{title}</h3>
-      <p className="text-muted-foreground">{description}</p>
+      <p className="text-muted-foreground flex-grow">{description}</p>
     </CardContent>
   </Card>
 );
 
-const FeatureItem = ({ icon: Icon, title }: { icon: React.ElementType, title: string }) => (
-  <div className="flex items-center space-x-3">
-    <div className="bg-laundry-100 p-2 rounded-full">
-      <Icon className="h-5 w-5 text-laundry-600" />
-    </div>
-    <span className="text-gray-700">{title}</span>
-  </div>
-);
+const ProjectCard = ({ 
+  title, 
+  creator, 
+  raised, 
+  goal, 
+  daysLeft, 
+  category,
+  slug 
+}: { 
+  title: string;
+  creator: string;
+  raised: number;
+  goal: number;
+  daysLeft: number;
+  category: string;
+  slug: string;
+}) => {
+  const progress = (raised / goal) * 100;
+  
+  return (
+    <Card className="overflow-hidden transition-all hover:shadow-lg">
+      <div className="aspect-video bg-muted relative">
+        <div className="absolute top-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded-full">
+          {category}
+        </div>
+      </div>
+      <CardContent className="p-6">
+        <h3 className="font-semibold text-lg mb-2 line-clamp-2">{title}</h3>
+        <p className="text-muted-foreground text-sm mb-4">by {creator}</p>
+        
+        <div className="relative h-2 bg-muted rounded-full mb-2">
+          <div 
+            className="absolute top-0 left-0 h-full bg-primary rounded-full" 
+            style={{ width: `${Math.min(progress, 100)}%` }}
+          ></div>
+        </div>
+        
+        <div className="flex justify-between text-sm">
+          <span className="font-medium">${raised.toLocaleString()} raised</span>
+          <span className="text-muted-foreground">${goal.toLocaleString()} goal</span>
+        </div>
+        
+        <div className="flex justify-between items-center mt-4">
+          <span className="text-sm text-muted-foreground">{daysLeft} days left</span>
+          <Link to={`/projects/${slug}`}>
+            <Button variant="outline" size="sm">View Project</Button>
+          </Link>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
 
 const Index = () => {
+  // Sample featured projects
+  const featuredProjects = [
+    {
+      title: "Educational Scholarship for Aspiring Medical Students",
+      creator: "Dr. Amanda Chen",
+      raised: 12500,
+      goal: 25000,
+      daysLeft: 18,
+      category: "Education",
+      slug: "med-scholarship"
+    },
+    {
+      title: "Community Art Center Renovation",
+      creator: "Local Artists Collective",
+      raised: 8200,
+      goal: 15000,
+      daysLeft: 30,
+      category: "Arts",
+      slug: "art-center"
+    },
+    {
+      title: "Tech Training Program for Underserved Youth",
+      creator: "Future Coders Initiative",
+      raised: 18500,
+      goal: 20000,
+      daysLeft: 12,
+      category: "Technology",
+      slug: "tech-training"
+    }
+  ];
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
       
       {/* Hero Section */}
-      <section className="hero-gradient text-white">
+      <section className="bg-gradient-to-br from-primary/10 via-primary/5 to-background">
         <div className="container mx-auto px-4 py-16 md:py-24">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             <div className="animate-fade-in">
-              <h1 className="text-3xl md:text-5xl font-bold mb-4">Clean Clothes, Happy You</h1>
-              <p className="text-xl mb-6">
-                Modern machines, clean environment, and affordable prices. 
-                Your neighborhood laundromat that makes laundry day a breeze.
+              <h1 className="text-3xl md:text-5xl font-bold mb-4">Fund Dreams, Build Futures</h1>
+              <p className="text-xl mb-6 text-muted-foreground">
+                CrémeTalent connects passionate creators with generous supporters.
+                Discover and fund exceptional projects and help talented individuals reach their full potential.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
-                <Button size="lg" className="bg-white text-laundry-600 hover:bg-laundry-50">
-                  View Services
-                </Button>
-                <Button size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white/20">
-                  Find Location
-                </Button>
+                <Link to="/projects">
+                  <Button size="lg">
+                    <HandCoins className="mr-2" />
+                    Fund a Project
+                  </Button>
+                </Link>
+                <Link to="/create-project">
+                  <Button size="lg" variant="outline">
+                    <FolderPlus className="mr-2" />
+                    Start Your Project
+                  </Button>
+                </Link>
               </div>
             </div>
             <div className="hidden md:flex justify-center">
               <img 
                 src="/placeholder.svg" 
-                alt="Modern Laundromat" 
+                alt="CrémeTalent Community" 
                 className="w-full max-w-lg rounded-lg shadow-xl" 
               />
             </div>
@@ -74,236 +154,125 @@ const Index = () => {
         </div>
       </section>
       
-      {/* Services Section */}
-      <section id="services" className="py-16 bg-laundry-50">
+      {/* Featured Projects Section */}
+      <section className="py-16 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="text-3xl font-bold">Featured Projects</h2>
+            <Link to="/projects">
+              <Button variant="outline">View All Projects</Button>
+            </Link>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {featuredProjects.map((project, index) => (
+              <ProjectCard key={index} {...project} />
+            ))}
+          </div>
+        </div>
+      </section>
+      
+      {/* How It Works Section */}
+      <section className="py-16 bg-muted/30">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Our Services</h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              We offer a variety of laundry services to meet your needs.
-              All machines are energy-efficient and regularly maintained.
+            <h2 className="text-3xl font-bold mb-4">How CrémeTalent Works</h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Our platform connects talented individuals with supporters who believe in their potential.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            <div className="flex flex-col items-center text-center">
+              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                <FolderPlus className="h-8 w-8 text-primary" />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Create a Project</h3>
+              <p className="text-muted-foreground">Share your vision, set your funding goal, and tell your story.</p>
+            </div>
+            
+            <div className="flex flex-col items-center text-center">
+              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                <Users className="h-8 w-8 text-primary" />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Gather Support</h3>
+              <p className="text-muted-foreground">Connect with people who believe in your idea and want to help.</p>
+            </div>
+            
+            <div className="flex flex-col items-center text-center">
+              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                <Award className="h-8 w-8 text-primary" />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Achieve Goals</h3>
+              <p className="text-muted-foreground">Use the funds to bring your project to life and share your success.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      {/* Features Section */}
+      <section className="py-16 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4">Why Choose CrémeTalent</h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Our platform is designed to maximize your success and impact.
             </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <ServiceCard 
-              icon={WashingMachine} 
-              title="Self-Service Washing" 
-              description="High-efficiency washers with multiple load sizes available. Use our app to monitor your wash remotely."
+            <FeatureCard 
+              icon={HandCoins} 
+              title="Transparent Funding" 
+              description="Clear tracking of all donations with regular updates on project progress."
             />
-            <ServiceCard 
-              icon={Wind} 
-              title="Fast Dryers" 
-              description="Our dryers are designed for quick, efficient drying to save you time and energy costs."
+            <FeatureCard 
+              icon={Heart} 
+              title="Community Support" 
+              description="Connect with a passionate community that believes in your potential."
             />
-            <ServiceCard 
-              icon={Clock} 
-              title="Wash & Fold Service" 
-              description="Drop off your laundry and pick it up clean, dried, and folded at your convenience."
+            <FeatureCard 
+              icon={HandHeart} 
+              title="Mentorship Access" 
+              description="Get guidance from industry experts who can help your project succeed."
             />
-            <ServiceCard 
-              icon={DollarSign} 
-              title="Affordable Pricing" 
-              description="Competitive prices with loyalty programs and special discounts for regular customers."
+            <FeatureCard 
+              icon={Gift} 
+              title="Backer Rewards" 
+              description="Offer unique rewards to thank supporters for their contributions."
             />
-            <ServiceCard 
-              icon={Wifi} 
-              title="Free Wi-Fi" 
-              description="Stay connected with our free high-speed Wi-Fi while waiting for your laundry."
+            <FeatureCard 
+              icon={Award} 
+              title="Success Stories" 
+              description="Join thousands of creators who have achieved their goals through CrémeTalent."
             />
-            <ServiceCard 
-              icon={CreditCard} 
-              title="Multiple Payment Options" 
-              description="Pay with cash, credit card, or our convenient mobile payment app."
+            <FeatureCard 
+              icon={Users} 
+              title="Global Reach" 
+              description="Connect with supporters from around the world who share your passion."
             />
           </div>
         </div>
       </section>
       
-      {/* Pricing Section */}
-      <section id="pricing" className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Our Pricing</h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Transparent pricing with no hidden fees. We offer various options to suit your laundry needs.
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-            <Card className="border-laundry-200">
-              <CardContent className="p-6">
-                <h3 className="text-xl font-bold mb-2">Washing Machines</h3>
-                <ul className="space-y-3 mb-4">
-                  <li className="flex justify-between">
-                    <span>Small Load (15 lb)</span>
-                    <span className="font-semibold">$2.50</span>
-                  </li>
-                  <li className="flex justify-between">
-                    <span>Medium Load (25 lb)</span>
-                    <span className="font-semibold">$3.75</span>
-                  </li>
-                  <li className="flex justify-between">
-                    <span>Large Load (35 lb)</span>
-                    <span className="font-semibold">$5.00</span>
-                  </li>
-                  <li className="flex justify-between">
-                    <span>Extra Large (50 lb)</span>
-                    <span className="font-semibold">$7.50</span>
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
-            
-            <Card className="border-laundry-200">
-              <CardContent className="p-6">
-                <h3 className="text-xl font-bold mb-2">Dryers</h3>
-                <ul className="space-y-3 mb-4">
-                  <li className="flex justify-between">
-                    <span>10 Minutes</span>
-                    <span className="font-semibold">$0.75</span>
-                  </li>
-                  <li className="flex justify-between">
-                    <span>30 Minutes</span>
-                    <span className="font-semibold">$2.00</span>
-                  </li>
-                  <li className="flex justify-between">
-                    <span>45 Minutes</span>
-                    <span className="font-semibold">$3.00</span>
-                  </li>
-                  <li className="flex justify-between">
-                    <span>60 Minutes</span>
-                    <span className="font-semibold">$3.75</span>
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
-            
-            <Card className="border-laundry-200">
-              <CardContent className="p-6">
-                <h3 className="text-xl font-bold mb-2">Wash & Fold</h3>
-                <ul className="space-y-3 mb-4">
-                  <li className="flex justify-between">
-                    <span>Per Pound</span>
-                    <span className="font-semibold">$1.75</span>
-                  </li>
-                  <li className="flex justify-between">
-                    <span>10+ lb Discount</span>
-                    <span className="font-semibold">$1.50/lb</span>
-                  </li>
-                  <li className="flex justify-between">
-                    <span>20+ lb Discount</span>
-                    <span className="font-semibold">$1.25/lb</span>
-                  </li>
-                  <li className="flex justify-between">
-                    <span>Same-day Service</span>
-                    <span className="font-semibold">+$10</span>
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-      
-      {/* About/Features Section */}
-      <section id="about" className="py-16 bg-gradient-to-b from-white to-laundry-50">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-3xl font-bold mb-4">About Our Facility</h2>
-              <p className="text-lg text-gray-700 mb-6">
-                SpinCycle Laundromat is committed to providing a clean, safe, and efficient laundry experience. 
-                Our modern facility features state-of-the-art equipment and amenities to make your laundry day as pleasant as possible.
-              </p>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <FeatureItem icon={Check} title="Modern Machines" />
-                <FeatureItem icon={Check} title="Free Wi-Fi" />
-                <FeatureItem icon={Check} title="Ample Parking" />
-                <FeatureItem icon={Check} title="Digital Payments" />
-                <FeatureItem icon={Check} title="Security Cameras" />
-                <FeatureItem icon={Check} title="Attendant On-site" />
-                <FeatureItem icon={Check} title="Vending Machines" />
-                <FeatureItem icon={Check} title="Folding Tables" />
-              </div>
-              
-              <Button className="mt-8" size="lg">Learn More About Us</Button>
-            </div>
-            
-            <div className="rounded-xl overflow-hidden shadow-xl">
-              <img 
-                src="/placeholder.svg" 
-                alt="Inside our facility" 
-                className="w-full h-auto" 
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-      
-      {/* Location Section */}
-      <section id="location" className="py-16 bg-laundry-100">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Find Us</h2>
-            <p className="text-xl text-gray-700 max-w-2xl mx-auto">
-              Conveniently located in your neighborhood with ample parking and easy access.
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <Card>
-              <CardContent className="p-6">
-                <MapPin className="h-8 w-8 text-laundry-500 mb-4" />
-                <h3 className="text-xl font-semibold mb-2">Address</h3>
-                <p className="text-gray-700">123 Wash Street</p>
-                <p className="text-gray-700">Cleanville, CA 90210</p>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardContent className="p-6">
-                <Phone className="h-8 w-8 text-laundry-500 mb-4" />
-                <h3 className="text-xl font-semibold mb-2">Phone</h3>
-                <p className="text-gray-700">(555) 123-4567</p>
-                <p className="text-gray-700 text-sm">Call us for any questions!</p>
-              </CardContent>
-            </Card>
-            
-            <Card>
-              <CardContent className="p-6">
-                <Mail className="h-8 w-8 text-laundry-500 mb-4" />
-                <h3 className="text-xl font-semibold mb-2">Email</h3>
-                <p className="text-gray-700">info@spincycle.com</p>
-                <p className="text-gray-700 text-sm">We'll respond within 24 hours</p>
-              </CardContent>
-            </Card>
-          </div>
-          
-          <div className="mt-12 bg-white rounded-xl overflow-hidden shadow-xl h-80 md:h-96">
-            {/* Map placeholder - In a real project, you would integrate Google Maps or another map provider */}
-            <div className="w-full h-full bg-laundry-200 flex items-center justify-center">
-              <p className="text-laundry-800 text-lg">Interactive Map Would Be Here</p>
-            </div>
-          </div>
-        </div>
-      </section>
-      
-      {/* Call to Action Section */}
-      <section className="py-16 bg-laundry-600 text-white">
+      {/* CTA Section */}
+      <section className="py-16 bg-primary text-primary-foreground">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-4">Ready to Experience Hassle-Free Laundry?</h2>
-          <p className="text-xl mb-8 max-w-2xl mx-auto">
-            Visit SpinCycle Laundromat today and discover why we're the preferred choice in the neighborhood.
+          <h2 className="text-3xl font-bold mb-4">Ready to Make an Impact?</h2>
+          <p className="text-xl mb-8 max-w-2xl mx-auto opacity-90">
+            Join CrémeTalent today and be part of a community that believes in the power of supporting talent.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Button size="lg" className="bg-white text-laundry-600 hover:bg-laundry-50">
-              Get Directions
-            </Button>
-            <Button size="lg" variant="outline" className="bg-transparent border-white hover:bg-white/20">
-              Call Now
-            </Button>
+            <Link to="/projects">
+              <Button size="lg" variant="secondary">
+                Explore Projects
+              </Button>
+            </Link>
+            <Link to="/create-project">
+              <Button size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white/20">
+                Start Your Project
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
