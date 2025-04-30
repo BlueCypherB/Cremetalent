@@ -104,7 +104,8 @@ const Index = () => {
       goal: 25000,
       daysLeft: 18,
       category: "Education",
-      slug: "med-scholarship"
+      slug: "med-scholarship",
+      image: "/lovable-uploads/2c7d8a69-0dd5-4145-a9b4-d627a7fe4ef1.png"
     },
     {
       title: "Community Art Center Renovation",
@@ -263,6 +264,63 @@ const Index = () => {
                   </Button>
                 </Link>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      {/* Educational Scholarship Section */}
+      <section className="py-16 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div className="order-2 md:order-1">
+              <h2 className="text-3xl font-bold mb-4">Educational Scholarship for Aspiring Medical Students</h2>
+              <p className="text-xl mb-6 text-muted-foreground">
+                Support the next generation of healthcare professionals. Our scholarship program provides financial assistance to talented students from diverse backgrounds pursuing medical careers.
+              </p>
+              <div className="space-y-4">
+                <div className="flex items-start space-x-3">
+                  <div className="mt-1">
+                    <GraduationCap className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg">Full Tuition Support</h3>
+                    <p className="text-muted-foreground">Covers educational expenses for qualified students</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <div className="mt-1">
+                    <Users className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg">Mentorship Program</h3>
+                    <p className="text-muted-foreground">Connect with experienced medical professionals</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <div className="mt-1">
+                    <Award className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg">Career Development</h3>
+                    <p className="text-muted-foreground">Access to internships and professional networking</p>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-6">
+                <Link to="/projects/med-scholarship">
+                  <Button>
+                    Support This Program
+                  </Button>
+                </Link>
+              </div>
+            </div>
+            <div className="order-1 md:order-2">
+              <img 
+                src="/lovable-uploads/2c7d8a69-0dd5-4145-a9b4-d627a7fe4ef1.png" 
+                alt="Educational Scholarship Students" 
+                className="rounded-lg shadow-xl w-full h-auto" 
+              />
             </div>
           </div>
         </div>
