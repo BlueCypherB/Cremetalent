@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
@@ -12,7 +11,10 @@ import {
   Award, 
   HandHeart, 
   Gift, 
-  FolderPlus
+  FolderPlus,
+  Code,
+  GraduationCap,
+  Laptop
 } from 'lucide-react';
 
 const FeatureCard = ({ icon: Icon, title, description }: { 
@@ -86,6 +88,16 @@ const Index = () => {
   // Sample featured projects
   const featuredProjects = [
     {
+      title: "Tech Training Program for Underserved Youth",
+      creator: "Future Coders Initiative",
+      raised: 18500,
+      goal: 20000,
+      daysLeft: 12,
+      category: "Technology",
+      slug: "tech-training",
+      image: "/lovable-uploads/279e0261-3ae6-45c7-9e27-20ce9fcfeaba.png"
+    },
+    {
       title: "Educational Scholarship for Aspiring Medical Students",
       creator: "Dr. Amanda Chen",
       raised: 12500,
@@ -102,15 +114,6 @@ const Index = () => {
       daysLeft: 30,
       category: "Arts",
       slug: "art-center"
-    },
-    {
-      title: "Tech Training Program for Underserved Youth",
-      creator: "Future Coders Initiative",
-      raised: 18500,
-      goal: 20000,
-      daysLeft: 12,
-      category: "Technology",
-      slug: "tech-training"
     }
   ];
 
@@ -166,14 +169,107 @@ const Index = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {featuredProjects.map((project, index) => (
-              <ProjectCard key={index} {...project} />
+              <Card key={index} className="overflow-hidden transition-all hover:shadow-lg">
+                <div className="aspect-video bg-muted relative">
+                  {project.image && (
+                    <img 
+                      src={project.image} 
+                      alt={project.title} 
+                      className="w-full h-full object-cover" 
+                    />
+                  )}
+                  <div className="absolute top-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded-full">
+                    {project.category}
+                  </div>
+                </div>
+                <CardContent className="p-6">
+                  <h3 className="font-semibold text-lg mb-2 line-clamp-2">{project.title}</h3>
+                  <p className="text-muted-foreground text-sm mb-4">by {project.creator}</p>
+                  
+                  <div className="relative h-2 bg-muted rounded-full mb-2">
+                    <div 
+                      className="absolute top-0 left-0 h-full bg-primary rounded-full" 
+                      style={{ width: `${Math.min((project.raised / project.goal) * 100, 100)}%` }}
+                    ></div>
+                  </div>
+                  
+                  <div className="flex justify-between text-sm">
+                    <span className="font-medium">${project.raised.toLocaleString()} raised</span>
+                    <span className="text-muted-foreground">${project.goal.toLocaleString()} goal</span>
+                  </div>
+                  
+                  <div className="flex justify-between items-center mt-4">
+                    <span className="text-sm text-muted-foreground">{project.daysLeft} days left</span>
+                    <Link to={`/projects/${project.slug}`}>
+                      <Button variant="outline" size="sm">View Project</Button>
+                    </Link>
+                  </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </div>
       </section>
       
-      {/* How It Works Section */}
+      {/* Tech Training Highlight Section */}
       <section className="py-16 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div>
+              <img 
+                src="/lovable-uploads/279e0261-3ae6-45c7-9e27-20ce9fcfeaba.png" 
+                alt="Tech Training for Underserved Youth" 
+                className="rounded-lg shadow-xl w-full h-auto" 
+              />
+            </div>
+            <div>
+              <h2 className="text-3xl font-bold mb-4">Tech Training for Underserved Youth</h2>
+              <p className="text-xl mb-6 text-muted-foreground">
+                Help provide opportunities in technology for youth from underserved communities. Our program equips young people with the skills needed to succeed in today's digital economy.
+              </p>
+              <div className="space-y-4">
+                <div className="flex items-start space-x-3">
+                  <div className="mt-1">
+                    <Code className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg">Coding & Development</h3>
+                    <p className="text-muted-foreground">Learn programming languages and build real-world projects</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <div className="mt-1">
+                    <GraduationCap className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg">Mentorship</h3>
+                    <p className="text-muted-foreground">Connect with industry professionals who provide guidance</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <div className="mt-1">
+                    <Laptop className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-lg">Equipment Access</h3>
+                    <p className="text-muted-foreground">Participants receive the hardware and software they need</p>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-6">
+                <Link to="/projects/tech-training">
+                  <Button>
+                    Support This Program
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      {/* How It Works Section */}
+      <section className="py-16 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4">How CrémeTalent Works</h2>
