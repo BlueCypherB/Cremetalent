@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -6,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { 
   WashingMachine, 
-  Dryer, 
+  Wind, 
   Clock, 
   DollarSign, 
   Wifi, 
@@ -93,7 +92,7 @@ const Index = () => {
               description="High-efficiency washers with multiple load sizes available. Use our app to monitor your wash remotely."
             />
             <ServiceCard 
-              icon={Dryer} 
+              icon={Wind} 
               title="Fast Dryers" 
               description="Our dryers are designed for quick, efficient drying to save you time and energy costs."
             />
