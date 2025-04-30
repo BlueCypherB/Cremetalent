@@ -145,8 +145,8 @@ const Index = () => {
             </div>
             <div className="hidden md:flex justify-center">
               <img 
-                src="/placeholder.svg" 
-                alt="CrémeTalent Community" 
+                src="/lovable-uploads/90e525c1-9643-4777-b523-84b6d202cb2d.png" 
+                alt="Artist painting on canvas" 
                 className="w-full max-w-lg rounded-lg shadow-xl" 
               />
             </div>
