@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
@@ -114,7 +115,8 @@ const Index = () => {
       goal: 15000,
       daysLeft: 30,
       category: "Arts",
-      slug: "art-center"
+      slug: "art-center",
+      image: "/lovable-uploads/community-art-center.png"
     }
   ];
 
