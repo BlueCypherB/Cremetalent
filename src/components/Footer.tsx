@@ -14,10 +14,10 @@ const Footer = () => {
           <div>
             <div className="flex items-center space-x-2 mb-4">
               <WashingMachine className="h-8 w-8" />
-              <h3 className="text-xl font-bold">SpinCycle</h3>
+              <h3 className="text-xl font-bold">CrémeTalent</h3>
             </div>
             <p className="text-laundry-100 mb-4">
-              Your friendly neighborhood laundromat offering self-service machines and full-service laundry options.
+              Empowering underserved communities through education, technology, and arts programs.
             </p>
             <div className="flex space-x-4">
               <a href="#" className="text-white hover:text-laundry-300 transition-colors">
@@ -52,21 +52,21 @@ const Footer = () => {
                 <Clock className="h-5 w-5 mt-0.5 flex-shrink-0" />
                 <div>
                   <p className="font-medium">Monday - Friday</p>
-                  <p className="text-laundry-100">6:00 AM - 10:00 PM</p>
+                  <p className="text-laundry-100">9:00 AM - 6:00 PM</p>
                 </div>
               </li>
               <li className="flex items-start space-x-2">
                 <Clock className="h-5 w-5 mt-0.5 flex-shrink-0" />
                 <div>
                   <p className="font-medium">Saturday</p>
-                  <p className="text-laundry-100">7:00 AM - 9:00 PM</p>
+                  <p className="text-laundry-100">10:00 AM - 4:00 PM</p>
                 </div>
               </li>
               <li className="flex items-start space-x-2">
                 <Clock className="h-5 w-5 mt-0.5 flex-shrink-0" />
                 <div>
                   <p className="font-medium">Sunday</p>
-                  <p className="text-laundry-100">8:00 AM - 8:00 PM</p>
+                  <p className="text-laundry-100">Closed</p>
                 </div>
               </li>
             </ul>
@@ -78,15 +78,15 @@ const Footer = () => {
             <ul className="space-y-3">
               <li className="flex items-start space-x-2">
                 <MapPin className="h-5 w-5 mt-0.5 flex-shrink-0" />
-                <p className="text-laundry-100">123 Wash Street, Cleanville, CA 90210</p>
+                <p className="text-laundry-100">456 Community Ave, Talentville, CA 90210</p>
               </li>
               <li className="flex items-start space-x-2">
                 <Phone className="h-5 w-5 mt-0.5 flex-shrink-0" />
-                <p className="text-laundry-100">(555) 123-4567</p>
+                <p className="text-laundry-100">(555) 987-6543</p>
               </li>
               <li className="flex items-start space-x-2">
                 <Mail className="h-5 w-5 mt-0.5 flex-shrink-0" />
-                <p className="text-laundry-100">info@spincycle.com</p>
+                <p className="text-laundry-100">info@cremetalent.org</p>
               </li>
             </ul>
           </div>
@@ -94,7 +94,7 @@ const Footer = () => {
         
         {/* Copyright */}
         <div className="border-t border-laundry-700 pt-6 mt-6 text-center text-laundry-300 text-sm">
-          <p>© {currentYear} SpinCycle Laundromat. All rights reserved.</p>
+          <p>© {currentYear} CrémeTalent Foundation. All rights reserved.</p>
         </div>
       </div>
     </footer>
