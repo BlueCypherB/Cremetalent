@@ -13,6 +13,7 @@ import AboutUs from "./pages/AboutUs";
 import Services from "./pages/Services";
 import HowItWorks from "./pages/HowItWorks";
 import TalentPool from "./pages/TalentPool";
+import JoinTalentPool from "./pages/JoinTalentPool";
 import TrainingResources from "./pages/TrainingResources";
 import Contact from "./pages/Contact";
 import Blog from "./pages/Blog";
@@ -36,6 +37,7 @@ const App = () => (
           <Route path="/services" element={<Services />} />
           <Route path="/how-it-works" element={<HowItWorks />} />
           <Route path="/talent-pool" element={<TalentPool />} />
+          <Route path="/join-talent-pool" element={<JoinTalentPool />} />
           <Route path="/training-resources" element={<TrainingResources />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/blog" element={<Blog />} />

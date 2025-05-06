@@ -2,6 +2,7 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Filter } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 interface TalentFilterSidebarProps {
   filters: {
@@ -34,6 +35,11 @@ const TalentFilterSidebar = ({ filters, handleFilterChange }: TalentFilterSideba
               <option value="">All Categories</option>
               <option value="Brand Strategy">Brand Strategy</option>
               <option value="Copywriting">Copywriting</option>
+              <option value="Graphic Design">Graphic Design</option>
+              <option value="Photography">Photography</option>
+              <option value="Videography">Videography</option>
+              <option value="Social Media Management">Social Media Management</option>
+              <option value="UI/UX Design">UI/UX Design</option>
             </select>
           </div>
           
@@ -46,6 +52,8 @@ const TalentFilterSidebar = ({ filters, handleFilterChange }: TalentFilterSideba
               onChange={(e) => handleFilterChange('experience', e.target.value)}
             >
               <option value="">All Levels</option>
+              <option value="Beginner">Beginner</option>
+              <option value="Intermediate">Intermediate</option>
               <option value="Advanced">Advanced</option>
             </select>
           </div>
@@ -60,6 +68,9 @@ const TalentFilterSidebar = ({ filters, handleFilterChange }: TalentFilterSideba
             >
               <option value="">All Locations</option>
               <option value="New York">New York</option>
+              <option value="Remote">Remote</option>
+              <option value="London">London</option>
+              <option value="San Francisco">San Francisco</option>
             </select>
           </div>
           
@@ -73,6 +84,8 @@ const TalentFilterSidebar = ({ filters, handleFilterChange }: TalentFilterSideba
             >
               <option value="">All Types</option>
               <option value="Immediate">Immediate</option>
+              <option value="Two weeks">Two weeks</option>
+              <option value="One month">One month</option>
             </select>
           </div>
           
@@ -96,7 +109,9 @@ const TalentFilterSidebar = ({ filters, handleFilterChange }: TalentFilterSideba
         <p className="text-muted-foreground mb-4">
           Are you a creative professional looking for new opportunities? Join our exclusive talent network.
         </p>
-        <Button>Apply Now</Button>
+        <Button asChild>
+          <Link to="/join-talent-pool">Apply Now</Link>
+        </Button>
       </div>
     </div>
   );
