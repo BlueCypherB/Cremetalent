@@ -16,79 +16,20 @@ import {
   ExternalLink
 } from 'lucide-react';
 
-// Sample talent data for demonstration
+// Updated talent data with only Pamela Williams
 const sampleTalent = [
   {
     id: 1,
-    name: "Alex Morgan",
+    name: "Pamela Williams",
     photo: null,
     location: "New York, NY",
-    category: "Graphic Design",
+    category: "Brand Strategy",
     experience: "Advanced",
-    availability: "Full-time",
-    bio: "Award-winning graphic designer with 8+ years of experience in branding and visual identity.",
-    skills: ["Brand Design", "Typography", "Print Design", "Adobe Creative Suite"],
-    portfolio: ["Brand Identity for Tech Startup", "Magazine Redesign", "Annual Report Design"]
-  },
-  {
-    id: 2,
-    name: "Jordan Lee",
-    photo: null,
-    location: "Los Angeles, CA",
-    category: "Video Editing",
-    experience: "Intermediate",
-    availability: "Freelance",
-    bio: "Creative video editor specializing in commercial and documentary content with an eye for compelling storytelling.",
-    skills: ["Video Editing", "Color Grading", "Motion Graphics", "Audio Editing"],
-    portfolio: ["Documentary Short Film", "Product Launch Videos", "Social Media Campaign"]
-  },
-  {
-    id: 3,
-    name: "Taylor Wilson",
-    photo: null,
-    location: "Chicago, IL",
-    category: "Content Creation",
-    experience: "Beginner",
-    availability: "Part-time",
-    bio: "Emerging content creator with a fresh perspective and strong writing skills across various digital platforms.",
-    skills: ["Copywriting", "Social Media Content", "Blog Writing", "SEO"],
-    portfolio: ["Company Blog Redesign", "Email Marketing Campaign", "Social Media Strategy"]
-  },
-  {
-    id: 4,
-    name: "Sam Rivera",
-    photo: null,
-    location: "Austin, TX",
-    category: "UI/UX Design",
-    experience: "Advanced",
-    availability: "Full-time",
-    bio: "User-focused designer creating intuitive and beautiful digital experiences across web and mobile platforms.",
-    skills: ["UI Design", "User Research", "Wireframing", "Figma", "Prototyping"],
-    portfolio: ["E-commerce App Redesign", "Banking Dashboard UI", "Travel Website Overhaul"]
-  },
-  {
-    id: 5,
-    name: "Casey Zhang",
-    photo: null,
-    location: "San Francisco, CA",
-    category: "Digital Marketing",
-    experience: "Intermediate",
-    availability: "Freelance",
-    bio: "Strategic digital marketer with a data-driven approach to campaigns and a knack for growth hacking.",
-    skills: ["PPC Advertising", "Analytics", "Email Marketing", "Campaign Strategy"],
-    portfolio: ["SaaS Growth Campaign", "Retail Holiday Marketing", "Non-profit Awareness Drive"]
-  },
-  {
-    id: 6,
-    name: "Morgan Smith",
-    photo: null,
-    location: "Portland, OR",
-    category: "Illustration",
-    experience: "Advanced",
-    availability: "Part-time",
-    bio: "Versatile illustrator with a distinct style working across editorial, advertising, and children's publishing.",
-    skills: ["Digital Illustration", "Character Design", "Editorial Art", "Book Illustration"],
-    portfolio: ["Children's Book Series", "Magazine Editorial Art", "Brand Mascot Design"]
+    availability: "Immediate",
+    bio: "Strategic brand professional with 6+ years of experience in developing brand identities and compelling copy.",
+    skills: ["Brand Strategy", "Copywriting"],
+    portfolio: ["www.behance.net/pamela"],
+    email: "pam@email.com"
   }
 ];
 
@@ -140,8 +81,8 @@ const TalentCard = ({ talent }: { talent: typeof sampleTalent[0] }) => (
         </div>
       </div>
       
-      <div>
-        <h4 className="font-medium mb-2">Notable Projects</h4>
+      <div className="mb-4">
+        <h4 className="font-medium mb-2">Portfolio</h4>
         <ul className="space-y-1">
           {talent.portfolio.map((project, index) => (
             <li key={index} className="flex items-center text-sm">
@@ -150,6 +91,14 @@ const TalentCard = ({ talent }: { talent: typeof sampleTalent[0] }) => (
             </li>
           ))}
         </ul>
+      </div>
+
+      <div className="mb-4">
+        <h4 className="font-medium mb-2">Contact</h4>
+        <p className="text-sm flex items-center">
+          <ExternalLink className="h-3.5 w-3.5 mr-2 text-primary" />
+          {talent.email}
+        </p>
       </div>
       
       <div className="mt-6">
@@ -251,12 +200,8 @@ const TalentPool = () => {
                       onChange={(e) => handleFilterChange('category', e.target.value)}
                     >
                       <option value="">All Categories</option>
-                      <option value="Graphic Design">Graphic Design</option>
-                      <option value="Video Editing">Video Editing</option>
-                      <option value="Content Creation">Content Creation</option>
-                      <option value="UI/UX Design">UI/UX Design</option>
-                      <option value="Digital Marketing">Digital Marketing</option>
-                      <option value="Illustration">Illustration</option>
+                      <option value="Brand Strategy">Brand Strategy</option>
+                      <option value="Copywriting">Copywriting</option>
                     </select>
                   </div>
                   
@@ -269,8 +214,6 @@ const TalentPool = () => {
                       onChange={(e) => handleFilterChange('experience', e.target.value)}
                     >
                       <option value="">All Levels</option>
-                      <option value="Beginner">Beginner</option>
-                      <option value="Intermediate">Intermediate</option>
                       <option value="Advanced">Advanced</option>
                     </select>
                   </div>
@@ -285,11 +228,6 @@ const TalentPool = () => {
                     >
                       <option value="">All Locations</option>
                       <option value="New York">New York</option>
-                      <option value="Los Angeles">Los Angeles</option>
-                      <option value="Chicago">Chicago</option>
-                      <option value="San Francisco">San Francisco</option>
-                      <option value="Austin">Austin</option>
-                      <option value="Portland">Portland</option>
                     </select>
                   </div>
                   
@@ -302,9 +240,7 @@ const TalentPool = () => {
                       onChange={(e) => handleFilterChange('availability', e.target.value)}
                     >
                       <option value="">All Types</option>
-                      <option value="Full-time">Full-time</option>
-                      <option value="Part-time">Part-time</option>
-                      <option value="Freelance">Freelance</option>
+                      <option value="Immediate">Immediate</option>
                     </select>
                   </div>
                   
