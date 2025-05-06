@@ -14,16 +14,16 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 199 89% 48%;
+    --primary: 43 96% 56%;
     --primary-foreground: 210 40% 98%;
 
-    --secondary: 250 95% 76%;
+    --secondary: 45 93% 47%;
     --secondary-foreground: 222.2 47.4% 11.2%;
 
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 243 75% 59%;
+    --accent: 43 96% 56%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
@@ -31,7 +31,7 @@
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 199 89% 48%;
+    --ring: 43 96% 56%;
 
     --radius: 0.75rem;
   }
@@ -46,16 +46,16 @@
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 199 89% 48%;
+    --primary: 43 96% 56%;
     --primary-foreground: 0 0% 98%;
 
-    --secondary: 250 95% 76%;
+    --secondary: 45 93% 47%;
     --secondary-foreground: 222.2 47.4% 11.2%;
 
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 243 75% 59%;
+    --accent: 43 96% 56%;
     --accent-foreground: 0 0% 98%;
 
     --destructive: 0 62.8% 30.6%;
@@ -63,7 +63,7 @@
 
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 199 89% 48%;
+    --ring: 43 96% 56%;
   }
 }
 
@@ -80,7 +80,7 @@
 
 @layer components {
   .hero-gradient {
-    @apply bg-gradient-to-br from-laundry-300 via-laundry-400 to-laundry-500;
+    @apply bg-gradient-to-br from-amber-300 via-amber-400 to-amber-500;
   }
   
   .service-card {
