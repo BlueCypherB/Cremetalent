@@ -10,7 +10,7 @@ interface TalentFilterSidebarProps {
     location: string;
     availability: string;
   };
-  handleFilterChange: (filterName: keyof typeof filters, value: string) => void;
+  handleFilterChange: (filterName: keyof TalentFilterSidebarProps['filters'], value: string) => void;
 }
 
 const TalentFilterSidebar = ({ filters, handleFilterChange }: TalentFilterSidebarProps) => {

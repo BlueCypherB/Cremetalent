@@ -26,7 +26,8 @@ import {
   Edit, 
   User,
   Share2,
-  Save
+  Save,
+  Star
 } from 'lucide-react';
 
 interface AdminTalentTableProps {
