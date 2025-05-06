@@ -20,18 +20,25 @@ const Navbar = () => {
         </Link>
         
         {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center space-x-8">
+        <div className="hidden md:flex items-center space-x-6">
           <Link to="/" className="text-laundry-800 hover:text-primary font-medium">Home</Link>
-          <Link to="/projects" className="text-laundry-800 hover:text-primary font-medium">Projects</Link>
-          <a href="#about" className="text-laundry-800 hover:text-primary font-medium">About</a>
-          <a href="#contact" className="text-laundry-800 hover:text-primary font-medium">Contact</a>
+          <Link to="/about" className="text-laundry-800 hover:text-primary font-medium">About Us</Link>
+          <Link to="/services" className="text-laundry-800 hover:text-primary font-medium">Services</Link>
+          <Link to="/how-it-works" className="text-laundry-800 hover:text-primary font-medium">How It Works</Link>
+          <Link to="/talent-pool" className="text-laundry-800 hover:text-primary font-medium">Talent Pool</Link>
+          <Link to="/training-resources" className="text-laundry-800 hover:text-primary font-medium">Resources</Link>
+          <Link to="/blog" className="text-laundry-800 hover:text-primary font-medium">Blog</Link>
+          <Link to="/contact" className="text-laundry-800 hover:text-primary font-medium">Contact</Link>
         </div>
         
-        <Link to="/create-project" className="hidden md:block">
-          <Button variant="default">
-            Start a Project
-          </Button>
-        </Link>
+        <div className="hidden md:flex space-x-4">
+          <Link to="/talent-pool">
+            <Button variant="outline">For Creatives</Button>
+          </Link>
+          <Link to="/services">
+            <Button variant="default">For Clients</Button>
+          </Link>
+        </div>
         
         {/* Mobile menu button */}
         <button 
@@ -49,11 +56,18 @@ const Navbar = () => {
         <div className="md:hidden bg-white px-4 py-3 shadow-md">
           <div className="flex flex-col space-y-3">
             <Link to="/" className="text-laundry-800 hover:text-primary font-medium py-2" onClick={() => setMobileMenuOpen(false)}>Home</Link>
-            <Link to="/projects" className="text-laundry-800 hover:text-primary font-medium py-2" onClick={() => setMobileMenuOpen(false)}>Projects</Link>
-            <a href="#about" className="text-laundry-800 hover:text-primary font-medium py-2" onClick={() => setMobileMenuOpen(false)}>About</a>
-            <a href="#contact" className="text-laundry-800 hover:text-primary font-medium py-2" onClick={() => setMobileMenuOpen(false)}>Contact</a>
-            <Link to="/create-project" className="w-full mt-2" onClick={() => setMobileMenuOpen(false)}>
-              <Button className="w-full" variant="default">Start a Project</Button>
+            <Link to="/about" className="text-laundry-800 hover:text-primary font-medium py-2" onClick={() => setMobileMenuOpen(false)}>About Us</Link>
+            <Link to="/services" className="text-laundry-800 hover:text-primary font-medium py-2" onClick={() => setMobileMenuOpen(false)}>Services</Link>
+            <Link to="/how-it-works" className="text-laundry-800 hover:text-primary font-medium py-2" onClick={() => setMobileMenuOpen(false)}>How It Works</Link>
+            <Link to="/talent-pool" className="text-laundry-800 hover:text-primary font-medium py-2" onClick={() => setMobileMenuOpen(false)}>Talent Pool</Link>
+            <Link to="/training-resources" className="text-laundry-800 hover:text-primary font-medium py-2" onClick={() => setMobileMenuOpen(false)}>Resources</Link>
+            <Link to="/blog" className="text-laundry-800 hover:text-primary font-medium py-2" onClick={() => setMobileMenuOpen(false)}>Blog</Link>
+            <Link to="/contact" className="text-laundry-800 hover:text-primary font-medium py-2" onClick={() => setMobileMenuOpen(false)}>Contact</Link>
+            <Link to="/talent-pool" className="w-full mt-2" onClick={() => setMobileMenuOpen(false)}>
+              <Button className="w-full" variant="outline">For Creatives</Button>
+            </Link>
+            <Link to="/services" className="w-full mt-2" onClick={() => setMobileMenuOpen(false)}>
+              <Button className="w-full" variant="default">For Clients</Button>
             </Link>
           </div>
         </div>

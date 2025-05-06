@@ -6,24 +6,21 @@ import Footer from '@/components/Footer';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { 
-  HandCoins, 
+  Briefcase, 
+  GraduationCap, 
   Users, 
-  Heart, 
   Award, 
-  HandHeart, 
-  Gift, 
-  FolderPlus,
-  Code,
-  GraduationCap,
-  Laptop
+  Star, 
+  FileText,
+  HandHeart
 } from 'lucide-react';
 
-const FeatureCard = ({ icon: Icon, title, description }: { 
+const ServiceCard = ({ icon: Icon, title, description }: { 
   icon: React.ElementType, 
   title: string, 
   description: string 
 }) => (
-  <Card className="feature-card h-full">
+  <Card className="service-card h-full">
     <CardContent className="p-6 flex flex-col h-full">
       <Icon className="h-10 w-10 text-primary mb-4" />
       <h3 className="text-xl font-semibold mb-2">{title}</h3>
@@ -32,94 +29,49 @@ const FeatureCard = ({ icon: Icon, title, description }: {
   </Card>
 );
 
-const ProjectCard = ({ 
-  title, 
-  creator, 
-  raised, 
-  goal, 
-  daysLeft, 
-  category,
-  slug 
+const TestimonialCard = ({ 
+  quote, 
+  name, 
+  company,
+  image
 }: { 
-  title: string;
-  creator: string;
-  raised: number;
-  goal: number;
-  daysLeft: number;
-  category: string;
-  slug: string;
-}) => {
-  const progress = (raised / goal) * 100;
-  
-  return (
-    <Card className="overflow-hidden transition-all hover:shadow-lg">
-      <div className="aspect-video bg-muted relative">
-        <div className="absolute top-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded-full">
-          {category}
+  quote: string;
+  name: string;
+  company: string;
+  image?: string;
+}) => (
+  <Card className="h-full">
+    <CardContent className="p-6 flex flex-col h-full">
+      <div className="flex-grow">
+        <div className="mb-4 text-amber-500">
+          <Star className="inline-block h-5 w-5" />
+          <Star className="inline-block h-5 w-5" />
+          <Star className="inline-block h-5 w-5" />
+          <Star className="inline-block h-5 w-5" />
+          <Star className="inline-block h-5 w-5" />
+        </div>
+        <p className="italic mb-6 text-lg">"{quote}"</p>
+      </div>
+      <div className="flex items-center">
+        {image ? (
+          <div className="w-12 h-12 rounded-full overflow-hidden bg-amber-100 mr-4">
+            <img src={image} alt={name} className="w-full h-full object-cover" />
+          </div>
+        ) : (
+          <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center mr-4">
+            <span className="text-amber-500 font-bold text-xl">{name.charAt(0)}</span>
+          </div>
+        )}
+        <div>
+          <p className="font-semibold">{name}</p>
+          <p className="text-sm text-muted-foreground">{company}</p>
         </div>
       </div>
-      <CardContent className="p-6">
-        <h3 className="font-semibold text-lg mb-2 line-clamp-2">{title}</h3>
-        <p className="text-muted-foreground text-sm mb-4">by {creator}</p>
-        
-        <div className="relative h-2 bg-muted rounded-full mb-2">
-          <div 
-            className="absolute top-0 left-0 h-full bg-primary rounded-full" 
-            style={{ width: `${Math.min(progress, 100)}%` }}
-          ></div>
-        </div>
-        
-        <div className="flex justify-between text-sm">
-          <span className="font-medium">${raised.toLocaleString()} raised</span>
-          <span className="text-muted-foreground">${goal.toLocaleString()} goal</span>
-        </div>
-        
-        <div className="flex justify-between items-center mt-4">
-          <span className="text-sm text-muted-foreground">{daysLeft} days left</span>
-          <Link to={`/projects/${slug}`}>
-            <Button variant="outline" size="sm">View Project</Button>
-          </Link>
-        </div>
-      </CardContent>
-    </Card>
-  );
-};
+    </CardContent>
+  </Card>
+);
 
 const Index = () => {
-  // Sample featured projects
-  const featuredProjects = [
-    {
-      title: "Tech Training Program for Underserved Youth",
-      creator: "Future Coders Initiative",
-      raised: 18500,
-      goal: 20000,
-      daysLeft: 12,
-      category: "Technology",
-      slug: "tech-training",
-      image: "/lovable-uploads/279e0261-3ae6-45c7-9e27-20ce9fcfeaba.png"
-    },
-    {
-      title: "Educational Scholarship for Aspiring Medical Students",
-      creator: "Dr. Amanda Chen",
-      raised: 12500,
-      goal: 25000,
-      daysLeft: 18,
-      category: "Education",
-      slug: "med-scholarship",
-      image: "/lovable-uploads/2c7d8a69-0dd5-4145-a9b4-d627a7fe4ef1.png"
-    },
-    {
-      title: "Community Art Center Renovation",
-      creator: "Local Artists Collective",
-      raised: 8200,
-      goal: 15000,
-      daysLeft: 30,
-      category: "Arts",
-      slug: "art-center",
-      image: "/lovable-uploads/community-art-center.png"
-    }
-  ];
-
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -129,22 +81,21 @@ const Index = () => {
         <div className="container mx-auto px-4 py-16 md:py-24">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             <div className="animate-fade-in">
-              <h1 className="text-3xl md:text-5xl font-bold mb-4">Fund Dreams, Build Futures</h1>
+              <h1 className="text-3xl md:text-5xl font-bold mb-4">Empowering the Creative Economy by Connecting Talent with Opportunities</h1>
               <p className="text-xl mb-6 text-muted-foreground">
-                CrémeTalent connects passionate creators with generous supporters.
-                Discover and fund exceptional projects and help talented individuals reach their full potential.
+                At CrémeTalent, we bridge the gap between exceptional creative professionals and the companies that need them.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
-                <Link to="/projects">
+                <Link to="/talent-pool">
                   <Button size="lg">
-                    <HandCoins className="mr-2" />
-                    Fund a Project
+                    <Users className="mr-2" />
+                    Join Our Talent Pool
                   </Button>
                 </Link>
-                <Link to="/create-project">
+                <Link to="/services">
                   <Button size="lg" variant="outline">
-                    <FolderPlus className="mr-2" />
-                    Start Your Project
+                    <Briefcase className="mr-2" />
+                    Find the Perfect Creative Talent
                   </Button>
                 </Link>
               </div>
@@ -152,7 +103,7 @@ const Index = () => {
             <div className="hidden md:flex justify-center">
               <img 
                 src="/lovable-uploads/90e525c1-9643-4777-b523-84b6d202cb2d.png" 
-                alt="Artist painting on canvas" 
+                alt="Creative professional at work" 
                 className="w-full max-w-lg rounded-lg shadow-xl" 
               />
             </div>
@@ -160,253 +111,199 @@ const Index = () => {
         </div>
       </section>
       
-      {/* Featured Projects Section */}
-      <section className="py-16 bg-background">
+      {/* Intro Section */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4 text-center max-w-4xl">
+          <h2 className="text-3xl font-bold mb-6">Premier Talent Management for the Creative Industry</h2>
+          <p className="text-xl text-muted-foreground mb-8">
+            CrémeTalent is a premier talent management and recruitment agency specializing in the creative industry. 
+            We offer services in talent sourcing, recruitment, training, onboarding, and ongoing talent management 
+            to empower both creatives and businesses.
+          </p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="bg-amber-50 p-4 rounded-lg">
+              <p className="text-4xl font-bold text-amber-500">500+</p>
+              <p className="text-sm text-muted-foreground">Creatives Placed</p>
+            </div>
+            <div className="bg-amber-50 p-4 rounded-lg">
+              <p className="text-4xl font-bold text-amber-500">200+</p>
+              <p className="text-sm text-muted-foreground">Client Companies</p>
+            </div>
+            <div className="bg-amber-50 p-4 rounded-lg">
+              <p className="text-4xl font-bold text-amber-500">50+</p>
+              <p className="text-sm text-muted-foreground">Industries Served</p>
+            </div>
+            <div className="bg-amber-50 p-4 rounded-lg">
+              <p className="text-4xl font-bold text-amber-500">98%</p>
+              <p className="text-sm text-muted-foreground">Client Satisfaction</p>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      {/* Services Section */}
+      <section className="py-16 bg-amber-50">
         <div className="container mx-auto px-4">
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-bold">Featured Projects</h2>
-            <Link to="/projects">
-              <Button variant="outline">View All Projects</Button>
-            </Link>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4">Our Services</h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              We provide comprehensive solutions for both creative professionals and businesses looking to connect.
+            </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {featuredProjects.map((project, index) => (
-              <Card key={index} className="overflow-hidden transition-all hover:shadow-lg">
-                <div className="aspect-video bg-muted relative">
-                  {project.image && (
-                    <img 
-                      src={project.image} 
-                      alt={project.title} 
-                      className="w-full h-full object-cover" 
-                    />
-                  )}
-                  <div className="absolute top-2 right-2 bg-black/60 text-white text-xs px-2 py-1 rounded-full">
-                    {project.category}
-                  </div>
-                </div>
-                <CardContent className="p-6">
-                  <h3 className="font-semibold text-lg mb-2 line-clamp-2">{project.title}</h3>
-                  <p className="text-muted-foreground text-sm mb-4">by {project.creator}</p>
-                  
-                  <div className="relative h-2 bg-muted rounded-full mb-2">
-                    <div 
-                      className="absolute top-0 left-0 h-full bg-primary rounded-full" 
-                      style={{ width: `${Math.min((project.raised / project.goal) * 100, 100)}%` }}
-                    ></div>
-                  </div>
-                  
-                  <div className="flex justify-between text-sm">
-                    <span className="font-medium">${project.raised.toLocaleString()} raised</span>
-                    <span className="text-muted-foreground">${project.goal.toLocaleString()} goal</span>
-                  </div>
-                  
-                  <div className="flex justify-between items-center mt-4">
-                    <span className="text-sm text-muted-foreground">{project.daysLeft} days left</span>
-                    <Link to={`/projects/${project.slug}`}>
-                      <Button variant="outline" size="sm">View Project</Button>
-                    </Link>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+            <ServiceCard 
+              icon={Briefcase} 
+              title="Talent Sourcing & Recruitment" 
+              description="Connecting businesses with top-tier creative professionals through our extensive network and rigorous vetting process."
+            />
+            <ServiceCard 
+              icon={GraduationCap} 
+              title="Training & Upskilling" 
+              description="Providing creatives with the tools, workshops, and resources they need to excel in their careers and stay ahead of industry trends."
+            />
+            <ServiceCard 
+              icon={Users} 
+              title="Onboarding" 
+              description="Ensuring smooth integration into new roles with comprehensive onboarding processes tailored to both clients and creative professionals."
+            />
+            <ServiceCard 
+              icon={Award} 
+              title="Talent Management" 
+              description="Ongoing support for sustained success, including career guidance, performance reviews, and development opportunities."
+            />
+            <ServiceCard 
+              icon={FileText} 
+              title="HR Services for Creatives" 
+              description="Tailored HR solutions for the creative sector, handling contracts, benefits, and administrative requirements."
+            />
+            <ServiceCard 
+              icon={HandHeart} 
+              title="Career Development" 
+              description="Strategic guidance for career advancement, portfolio development, and long-term professional growth in creative fields."
+            />
           </div>
         </div>
       </section>
       
-      {/* Tech Training Highlight Section */}
-      <section className="py-16 bg-muted/30">
+      {/* Testimonials Section */}
+      <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-            <div>
-              <img 
-                src="/lovable-uploads/279e0261-3ae6-45c7-9e27-20ce9fcfeaba.png" 
-                alt="Tech Training for Underserved Youth" 
-                className="rounded-lg shadow-xl w-full h-auto" 
-              />
-            </div>
-            <div>
-              <h2 className="text-3xl font-bold mb-4">Tech Training for Underserved Youth</h2>
-              <p className="text-xl mb-6 text-muted-foreground">
-                Help provide opportunities in technology for youth from underserved communities. Our program equips young people with the skills needed to succeed in today's digital economy.
-              </p>
-              <div className="space-y-4">
-                <div className="flex items-start space-x-3">
-                  <div className="mt-1">
-                    <Code className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-lg">Coding & Development</h3>
-                    <p className="text-muted-foreground">Learn programming languages and build real-world projects</p>
-                  </div>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <div className="mt-1">
-                    <GraduationCap className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-lg">Mentorship</h3>
-                    <p className="text-muted-foreground">Connect with industry professionals who provide guidance</p>
-                  </div>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <div className="mt-1">
-                    <Laptop className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-lg">Equipment Access</h3>
-                    <p className="text-muted-foreground">Participants receive the hardware and software they need</p>
-                  </div>
-                </div>
-              </div>
-              <div className="mt-6">
-                <Link to="/projects/tech-training">
-                  <Button>
-                    Support This Program
-                  </Button>
-                </Link>
-              </div>
-            </div>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4">What Our Clients Say</h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Hear from the businesses and creative professionals who have experienced the CrémeTalent difference.
+            </p>
           </div>
-        </div>
-      </section>
-      
-      {/* Educational Scholarship Section */}
-      <section className="py-16 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-            <div className="order-2 md:order-1">
-              <h2 className="text-3xl font-bold mb-4">Educational Scholarship for Aspiring Medical Students</h2>
-              <p className="text-xl mb-6 text-muted-foreground">
-                Support the next generation of healthcare professionals. Our scholarship program provides financial assistance to talented students from diverse backgrounds pursuing medical careers.
-              </p>
-              <div className="space-y-4">
-                <div className="flex items-start space-x-3">
-                  <div className="mt-1">
-                    <GraduationCap className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-lg">Full Tuition Support</h3>
-                    <p className="text-muted-foreground">Covers educational expenses for qualified students</p>
-                  </div>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <div className="mt-1">
-                    <Users className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-lg">Mentorship Program</h3>
-                    <p className="text-muted-foreground">Connect with experienced medical professionals</p>
-                  </div>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <div className="mt-1">
-                    <Award className="h-5 w-5 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-lg">Career Development</h3>
-                    <p className="text-muted-foreground">Access to internships and professional networking</p>
-                  </div>
-                </div>
-              </div>
-              <div className="mt-6">
-                <Link to="/projects/med-scholarship">
-                  <Button>
-                    Support This Program
-                  </Button>
-                </Link>
-              </div>
-            </div>
-            <div className="order-1 md:order-2">
-              <img 
-                src="/lovable-uploads/2c7d8a69-0dd5-4145-a9b4-d627a7fe4ef1.png" 
-                alt="Educational Scholarship Students" 
-                className="rounded-lg shadow-xl w-full h-auto" 
-              />
-            </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <TestimonialCard 
+              quote="CrémeTalent connected us with a designer who transformed our brand identity. Their process was seamless and efficient."
+              name="Sarah Johnson"
+              company="Creative Director, DesignHub"
+            />
+            <TestimonialCard 
+              quote="The quality of talent in their pool is outstanding. We found the perfect video editor for our marketing team within days."
+              name="Michael Chen"
+              company="Marketing Manager, TechVision"
+            />
+            <TestimonialCard 
+              quote="As a freelance graphic designer, joining CrémeTalent's network has been career-changing. Steady work with great clients!"
+              name="Ava Washington"
+              company="Independent Designer"
+            />
           </div>
         </div>
       </section>
       
       {/* How It Works Section */}
-      <section className="py-16 bg-background">
+      <section className="py-16 bg-amber-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4">How CrémeTalent Works</h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Our platform connects talented individuals with supporters who believe in their potential.
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Our streamlined process connects talent with opportunity efficiently and effectively.
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            <div className="flex flex-col items-center text-center">
-              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-                <FolderPlus className="h-8 w-8 text-primary" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <div className="bg-white p-8 rounded-xl shadow-sm">
+              <h3 className="text-2xl font-bold mb-4 text-center">For Creative Professionals</h3>
+              <ol className="space-y-4">
+                <li className="flex">
+                  <span className="bg-primary text-white w-8 h-8 rounded-full flex items-center justify-center mr-4 shrink-0">1</span>
+                  <div>
+                    <p className="font-semibold">Apply</p>
+                    <p className="text-muted-foreground">Submit your application to join our talent pool with your portfolio and credentials.</p>
+                  </div>
+                </li>
+                <li className="flex">
+                  <span className="bg-primary text-white w-8 h-8 rounded-full flex items-center justify-center mr-4 shrink-0">2</span>
+                  <div>
+                    <p className="font-semibold">Train</p>
+                    <p className="text-muted-foreground">Access our training programs to enhance your skills and marketability.</p>
+                  </div>
+                </li>
+                <li className="flex">
+                  <span className="bg-primary text-white w-8 h-8 rounded-full flex items-center justify-center mr-4 shrink-0">3</span>
+                  <div>
+                    <p className="font-semibold">Match</p>
+                    <p className="text-muted-foreground">Get connected with job opportunities that align with your skills and career goals.</p>
+                  </div>
+                </li>
+                <li className="flex">
+                  <span className="bg-primary text-white w-8 h-8 rounded-full flex items-center justify-center mr-4 shrink-0">4</span>
+                  <div>
+                    <p className="font-semibold">Grow</p>
+                    <p className="text-muted-foreground">Receive ongoing support and development opportunities as your career advances.</p>
+                  </div>
+                </li>
+              </ol>
+              <div className="mt-6 text-center">
+                <Link to="/talent-pool">
+                  <Button>Join Our Talent Pool</Button>
+                </Link>
               </div>
-              <h3 className="text-xl font-semibold mb-2">Create a Project</h3>
-              <p className="text-muted-foreground">Share your vision, set your funding goal, and tell your story.</p>
             </div>
             
-            <div className="flex flex-col items-center text-center">
-              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-                <Users className="h-8 w-8 text-primary" />
+            <div className="bg-white p-8 rounded-xl shadow-sm">
+              <h3 className="text-2xl font-bold mb-4 text-center">For Businesses</h3>
+              <ol className="space-y-4">
+                <li className="flex">
+                  <span className="bg-secondary text-secondary-foreground w-8 h-8 rounded-full flex items-center justify-center mr-4 shrink-0">1</span>
+                  <div>
+                    <p className="font-semibold">Reach Out</p>
+                    <p className="text-muted-foreground">Contact us with your creative talent needs and recruitment goals.</p>
+                  </div>
+                </li>
+                <li className="flex">
+                  <span className="bg-secondary text-secondary-foreground w-8 h-8 rounded-full flex items-center justify-center mr-4 shrink-0">2</span>
+                  <div>
+                    <p className="font-semibold">Define Needs</p>
+                    <p className="text-muted-foreground">Work with our team to identify the exact skills and experience you require.</p>
+                  </div>
+                </li>
+                <li className="flex">
+                  <span className="bg-secondary text-secondary-foreground w-8 h-8 rounded-full flex items-center justify-center mr-4 shrink-0">3</span>
+                  <div>
+                    <p className="font-semibold">Select Talent</p>
+                    <p className="text-muted-foreground">Review our carefully curated candidates who match your requirements.</p>
+                  </div>
+                </li>
+                <li className="flex">
+                  <span className="bg-secondary text-secondary-foreground w-8 h-8 rounded-full flex items-center justify-center mr-4 shrink-0">4</span>
+                  <div>
+                    <p className="font-semibold">Integrate</p>
+                    <p className="text-muted-foreground">Experience seamless onboarding and continuous support throughout the process.</p>
+                  </div>
+                </li>
+              </ol>
+              <div className="mt-6 text-center">
+                <Link to="/services">
+                  <Button variant="secondary">Request Creative Talent</Button>
+                </Link>
               </div>
-              <h3 className="text-xl font-semibold mb-2">Gather Support</h3>
-              <p className="text-muted-foreground">Connect with people who believe in your idea and want to help.</p>
             </div>
-            
-            <div className="flex flex-col items-center text-center">
-              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-                <Award className="h-8 w-8 text-primary" />
-              </div>
-              <h3 className="text-xl font-semibold mb-2">Achieve Goals</h3>
-              <p className="text-muted-foreground">Use the funds to bring your project to life and share your success.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-      
-      {/* Features Section */}
-      <section className="py-16 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Why Choose CrémeTalent</h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Our platform is designed to maximize your success and impact.
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <FeatureCard 
-              icon={HandCoins} 
-              title="Transparent Funding" 
-              description="Clear tracking of all donations with regular updates on project progress."
-            />
-            <FeatureCard 
-              icon={Heart} 
-              title="Community Support" 
-              description="Connect with a passionate community that believes in your potential."
-            />
-            <FeatureCard 
-              icon={HandHeart} 
-              title="Mentorship Access" 
-              description="Get guidance from industry experts who can help your project succeed."
-            />
-            <FeatureCard 
-              icon={Gift} 
-              title="Backer Rewards" 
-              description="Offer unique rewards to thank supporters for their contributions."
-            />
-            <FeatureCard 
-              icon={Award} 
-              title="Success Stories" 
-              description="Join thousands of creators who have achieved their goals through CrémeTalent."
-            />
-            <FeatureCard 
-              icon={Users} 
-              title="Global Reach" 
-              description="Connect with supporters from around the world who share your passion."
-            />
           </div>
         </div>
       </section>
@@ -414,19 +311,19 @@ const Index = () => {
       {/* CTA Section */}
       <section className="py-16 bg-primary text-primary-foreground">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-4">Ready to Make an Impact?</h2>
+          <h2 className="text-3xl font-bold mb-4">Ready to Take the Next Step?</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto opacity-90">
-            Join CrémeTalent today and be part of a community that believes in the power of supporting talent.
+            Join CrémeTalent today and be part of a community that connects exceptional talent with meaningful opportunities.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Link to="/projects">
+            <Link to="/talent-pool">
               <Button size="lg" variant="secondary">
-                Explore Projects
+                Join Our Talent Pool
               </Button>
             </Link>
-            <Link to="/create-project">
+            <Link to="/services">
               <Button size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white/20">
-                Start Your Project
+                Request Creative Talent
               </Button>
             </Link>
           </div>
