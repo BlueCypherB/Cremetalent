@@ -1,8 +1,8 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import TalentSpotlight from '@/components/talent/TalentSpotlight';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { 
@@ -140,6 +140,9 @@ const Index = () => {
           </div>
         </div>
       </section>
+      
+      {/* Talent Spotlight Section */}
+      <TalentSpotlight />
       
       {/* Services Section */}
       <section className="py-16 bg-amber-50">

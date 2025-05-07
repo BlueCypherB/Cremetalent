@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -14,8 +13,7 @@ import {
   Clock, 
   Linkedin, 
   Instagram, 
-  Twitter, 
-  Facebook,
+  X,
   Send
 } from 'lucide-react';
 
@@ -131,44 +129,41 @@ const Contact = () => {
                   <ContactInfoCard 
                     icon={Phone} 
                     title="Phone" 
-                    content="(555) 123-4567"
-                    link="tel:+15551234567"
+                    content="+234 9077937879"
+                    link="tel:+2349077937879"
                   />
                   
                   <ContactInfoCard 
                     icon={Mail} 
                     title="Email" 
-                    content="info@cremetalent.com"
-                    link="mailto:info@cremetalent.com"
+                    content="Cremetalentafrica@gmail.com"
+                    link="mailto:Cremetalentafrica@gmail.com"
                   />
                   
                   <ContactInfoCard 
                     icon={MapPin} 
                     title="Office Address" 
-                    content="123 Creative Avenue, Talent City, CA 90210"
+                    content="Federal Capital City, Abuja, Nigeria"
                   />
                   
                   <ContactInfoCard 
                     icon={Clock} 
                     title="Business Hours" 
-                    content="Mon-Fri: 9AM-6PM, Sat: 10AM-4PM"
+                    content="Mon-Fri: 9AM-5PM, Weekends: Closed"
                   />
                 </div>
                 
                 <div className="bg-amber-50 p-6 rounded-lg">
                   <h3 className="font-semibold text-lg mb-4">Connect With Us</h3>
                   <div className="flex justify-center space-x-6">
-                    <a href="#" className="bg-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-amber-100 transition-colors">
+                    <a href="https://www.linkedin.com" className="bg-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-amber-100 transition-colors">
                       <Linkedin className="h-5 w-5 text-amber-600" />
                     </a>
-                    <a href="#" className="bg-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-amber-100 transition-colors">
+                    <a href="https://www.instagram.com/cremetalentafrica?igsh=MTFmejR1aXE5b2R0bQ%3D%3D&utm_source=qr" className="bg-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-amber-100 transition-colors">
                       <Instagram className="h-5 w-5 text-amber-600" />
                     </a>
-                    <a href="#" className="bg-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-amber-100 transition-colors">
-                      <Twitter className="h-5 w-5 text-amber-600" />
-                    </a>
-                    <a href="#" className="bg-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-amber-100 transition-colors">
-                      <Facebook className="h-5 w-5 text-amber-600" />
+                    <a href="https://x.com/cremetalenta?s=21" className="bg-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-amber-100 transition-colors">
+                      <X className="h-5 w-5 text-amber-600" />
                     </a>
                   </div>
                 </div>
@@ -188,7 +183,7 @@ const Contact = () => {
               <MapPin className="h-12 w-12 text-amber-300 mx-auto mb-4" />
               <p className="text-muted-foreground">
                 Interactive map would be displayed here.<br />
-                Our office is located at: 123 Creative Avenue, Talent City, CA 90210
+                Our office is located at: Federal Capital City, Abuja, Nigeria
               </p>
             </div>
           </div>

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { HandHeart, Phone, Mail, MapPin, Clock, Linkedin, Instagram, Twitter, Facebook } from 'lucide-react';
+import { HandHeart, Phone, Mail, MapPin, Clock, Linkedin, Instagram, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Footer = () => {
@@ -20,17 +20,14 @@ const Footer = () => {
               Empowering the creative economy by connecting exceptional talent with opportunities that make a difference.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-white hover:text-amber-300 transition-colors">
+              <a href="https://www.linkedin.com" className="text-white hover:text-amber-300 transition-colors">
                 <Linkedin className="h-5 w-5" />
               </a>
-              <a href="#" className="text-white hover:text-amber-300 transition-colors">
+              <a href="https://www.instagram.com/cremetalentafrica?igsh=MTFmejR1aXE5b2R0bQ%3D%3D&utm_source=qr" className="text-white hover:text-amber-300 transition-colors">
                 <Instagram className="h-5 w-5" />
               </a>
-              <a href="#" className="text-white hover:text-amber-300 transition-colors">
-                <Twitter className="h-5 w-5" />
-              </a>
-              <a href="#" className="text-white hover:text-amber-300 transition-colors">
-                <Facebook className="h-5 w-5" />
+              <a href="https://x.com/cremetalenta?s=21" className="text-white hover:text-amber-300 transition-colors">
+                <X className="h-5 w-5" />
               </a>
             </div>
           </div>
@@ -56,20 +53,13 @@ const Footer = () => {
                 <Clock className="h-5 w-5 mt-0.5 flex-shrink-0" />
                 <div>
                   <p className="font-medium">Monday - Friday</p>
-                  <p className="text-amber-100">9:00 AM - 6:00 PM</p>
+                  <p className="text-amber-100">9:00 AM - 5:00 PM</p>
                 </div>
               </li>
               <li className="flex items-start space-x-2">
                 <Clock className="h-5 w-5 mt-0.5 flex-shrink-0" />
                 <div>
-                  <p className="font-medium">Saturday</p>
-                  <p className="text-amber-100">10:00 AM - 4:00 PM</p>
-                </div>
-              </li>
-              <li className="flex items-start space-x-2">
-                <Clock className="h-5 w-5 mt-0.5 flex-shrink-0" />
-                <div>
-                  <p className="font-medium">Sunday</p>
+                  <p className="font-medium">Saturday & Sunday</p>
                   <p className="text-amber-100">Closed</p>
                 </div>
               </li>
@@ -82,15 +72,15 @@ const Footer = () => {
             <ul className="space-y-3">
               <li className="flex items-start space-x-2">
                 <MapPin className="h-5 w-5 mt-0.5 flex-shrink-0" />
-                <p className="text-amber-100">123 Creative Avenue, Talent City, CA 90210</p>
+                <p className="text-amber-100">Federal Capital City, Abuja, Nigeria</p>
               </li>
               <li className="flex items-start space-x-2">
                 <Phone className="h-5 w-5 mt-0.5 flex-shrink-0" />
-                <p className="text-amber-100">(555) 123-4567</p>
+                <p className="text-amber-100">+234 9077937879</p>
               </li>
               <li className="flex items-start space-x-2">
                 <Mail className="h-5 w-5 mt-0.5 flex-shrink-0" />
-                <p className="text-amber-100">info@cremetalent.com</p>
+                <p className="text-amber-100">Cremetalentafrica@gmail.com</p>
               </li>
             </ul>
           </div>
