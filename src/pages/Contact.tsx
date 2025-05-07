@@ -1,11 +1,7 @@
 import React from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
 import { 
   Phone, 
   Mail, 
@@ -13,9 +9,9 @@ import {
   Clock, 
   Linkedin, 
   Instagram, 
-  X,
-  Send
+  X
 } from 'lucide-react';
+import ClientIntakeForm from '@/components/client/ClientIntakeForm';
 
 const ContactInfoCard = ({ 
   icon: Icon, 
@@ -46,12 +42,6 @@ const ContactInfoCard = ({
 );
 
 const Contact = () => {
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Form submission logic would go here
-    console.log('Form submitted');
-  };
-
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -66,107 +56,67 @@ const Contact = () => {
         </div>
       </section>
       
-      {/* Contact Form & Info Section */}
+      {/* Contact Info & Client Intake Form Section */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Contact Form */}
-            <div>
-              <h2 className="text-3xl font-bold mb-6">Get In Touch</h2>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+            {/* Left Side - Contact Info */}
+            <div className="lg:col-span-4">
+              <h2 className="text-3xl font-bold mb-6">Our Contact Information</h2>
               <p className="text-muted-foreground mb-8">
-                Fill out the form below and one of our team members will get back to you as soon as possible.
+                You can reach us using the information below or visit our office during business hours.
               </p>
               
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="name">Your Name</Label>
-                    <Input id="name" placeholder="Full Name" required />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email Address</Label>
-                    <Input id="email" type="email" placeholder="your@email.com" required />
-                  </div>
-                </div>
+              <div className="grid grid-cols-1 gap-6 mb-8">
+                <ContactInfoCard 
+                  icon={Phone} 
+                  title="Phone" 
+                  content="+234 9077937879"
+                  link="tel:+2349077937879"
+                />
                 
-                <div className="space-y-2">
-                  <Label htmlFor="subject">Subject</Label>
-                  <Input id="subject" placeholder="What is this regarding?" required />
-                </div>
+                <ContactInfoCard 
+                  icon={Mail} 
+                  title="Email" 
+                  content="Cremetalentafrica@gmail.com"
+                  link="mailto:Cremetalentafrica@gmail.com"
+                />
                 
-                <div className="space-y-2">
-                  <Label htmlFor="message">Message</Label>
-                  <Textarea 
-                    id="message" 
-                    placeholder="Tell us how we can help..." 
-                    rows={5} 
-                    className="resize-none"
-                    required
-                  />
-                </div>
+                <ContactInfoCard 
+                  icon={MapPin} 
+                  title="Office Address" 
+                  content="Federal Capital City, Abuja, Nigeria"
+                />
                 
-                <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-                  <p className="text-sm text-muted-foreground">
-                    We'll get back to you within 24-48 hours.
-                  </p>
-                  <Button type="submit">
-                    <Send className="mr-2 h-4 w-4" />
-                    Send Message
-                  </Button>
+                <ContactInfoCard 
+                  icon={Clock} 
+                  title="Business Hours" 
+                  content="Mon-Fri: 9AM-5PM, Weekends: Closed"
+                />
+              </div>
+              
+              <div className="bg-amber-50 p-6 rounded-lg">
+                <h3 className="font-semibold text-lg mb-4">Connect With Us</h3>
+                <div className="flex justify-center space-x-6">
+                  <a href="https://www.linkedin.com" className="bg-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-amber-100 transition-colors">
+                    <Linkedin className="h-5 w-5 text-amber-600" />
+                  </a>
+                  <a href="https://www.instagram.com/cremetalentafrica?igsh=MTFmejR1aXE5b2R0bQ%3D%3D&utm_source=qr" className="bg-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-amber-100 transition-colors">
+                    <Instagram className="h-5 w-5 text-amber-600" />
+                  </a>
+                  <a href="https://x.com/cremetalenta?s=21" className="bg-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-amber-100 transition-colors">
+                    <X className="h-5 w-5 text-amber-600" />
+                  </a>
                 </div>
-              </form>
+              </div>
             </div>
             
-            {/* Contact Info */}
-            <div>
-              <div className="lg:pl-8">
-                <h2 className="text-3xl font-bold mb-6">Our Contact Information</h2>
-                <p className="text-muted-foreground mb-8">
-                  You can also reach us using the information below or visit our office during business hours.
-                </p>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
-                  <ContactInfoCard 
-                    icon={Phone} 
-                    title="Phone" 
-                    content="+234 9077937879"
-                    link="tel:+2349077937879"
-                  />
-                  
-                  <ContactInfoCard 
-                    icon={Mail} 
-                    title="Email" 
-                    content="Cremetalentafrica@gmail.com"
-                    link="mailto:Cremetalentafrica@gmail.com"
-                  />
-                  
-                  <ContactInfoCard 
-                    icon={MapPin} 
-                    title="Office Address" 
-                    content="Federal Capital City, Abuja, Nigeria"
-                  />
-                  
-                  <ContactInfoCard 
-                    icon={Clock} 
-                    title="Business Hours" 
-                    content="Mon-Fri: 9AM-5PM, Weekends: Closed"
-                  />
-                </div>
-                
-                <div className="bg-amber-50 p-6 rounded-lg">
-                  <h3 className="font-semibold text-lg mb-4">Connect With Us</h3>
-                  <div className="flex justify-center space-x-6">
-                    <a href="https://www.linkedin.com" className="bg-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-amber-100 transition-colors">
-                      <Linkedin className="h-5 w-5 text-amber-600" />
-                    </a>
-                    <a href="https://www.instagram.com/cremetalentafrica?igsh=MTFmejR1aXE5b2R0bQ%3D%3D&utm_source=qr" className="bg-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-amber-100 transition-colors">
-                      <Instagram className="h-5 w-5 text-amber-600" />
-                    </a>
-                    <a href="https://x.com/cremetalenta?s=21" className="bg-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-amber-100 transition-colors">
-                      <X className="h-5 w-5 text-amber-600" />
-                    </a>
-                  </div>
-                </div>
+            {/* Right Side - Client Intake Form */}
+            <div className="lg:col-span-8">
+              <div className="bg-white p-6 rounded-lg shadow-sm border border-amber-200">
+                <h2 className="text-3xl font-bold mb-2 text-center">CreméTalentAfrica – Client Intake Form</h2>
+                <p className="text-center text-muted-foreground mb-6">Helping You Find the Right Creatives for Your Vision</p>
+                <ClientIntakeForm />
               </div>
             </div>
           </div>
