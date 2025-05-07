@@ -19,6 +19,7 @@ import Contact from "./pages/Contact";
 import Blog from "./pages/Blog";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsConditions from "./pages/TermsConditions";
+import ClientIntakeForm from "./pages/ClientIntakeForm";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +39,7 @@ const App = () => (
           <Route path="/how-it-works" element={<HowItWorks />} />
           <Route path="/talent-pool" element={<TalentPool />} />
           <Route path="/join-talent-pool" element={<JoinTalentPool />} />
+          <Route path="/client-intake-form" element={<ClientIntakeForm />} />
           <Route path="/training-resources" element={<TrainingResources />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/blog" element={<Blog />} />

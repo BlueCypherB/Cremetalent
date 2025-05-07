@@ -116,9 +116,7 @@ const Index = () => {
         <div className="container mx-auto px-4 text-center max-w-4xl">
           <h2 className="text-3xl font-bold mb-6">Premier Talent Management for the Creative Industry</h2>
           <p className="text-xl text-muted-foreground mb-8">
-            CrémeTalent is a premier talent management and recruitment agency specializing in the creative industry. 
-            We offer services in talent sourcing, recruitment, training, onboarding, and ongoing talent management 
-            to empower both creatives and businesses.
+            CrémeTalent connects top-tier creative professionals with forward-thinking brands — providing end-to-end talent services that source, train, and manage the very best in Nigeria's creative economy.
           </p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="bg-amber-50 p-4 rounded-lg">
