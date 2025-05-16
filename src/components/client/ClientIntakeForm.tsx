@@ -180,7 +180,7 @@ const budgetRanges = [
 
 const paymentStructures = [
   { id: "one-off", label: "One-off" },
-  { id: "split", label: "50% upfront, 50% after delivery" },
+  { id: "split", label: "70% upfront, 30% after delivery" },
   { id: "monthly", label: "Monthly Retainer" },
   { id: "other", label: "Other" },
 ];
@@ -238,7 +238,7 @@ const ClientIntakeForm = () => {
     <div className="max-w-4xl mx-auto py-8 px-4">
       <Card className="border-amber-200">
         <CardHeader className="bg-amber-50">
-          <CardTitle className="text-center text-2xl">CreméTalentAfrica – Client Intake Form</CardTitle>
+          <CardTitle className="text-center text-2xl">CrémeTalent - Client Intake Form</CardTitle>
           <CardDescription className="text-center text-lg">
             Helping You Find the Right Creatives for Your Vision
           </CardDescription>
@@ -250,8 +250,22 @@ const ClientIntakeForm = () => {
               
               {/* Section 1: Client Details */}
               <div>
-                <h3 className="text-xl font-semibold mb-4">SECTION 1: CLIENT DETAILS</h3>
+                <h3 className="text-xl font-semibold mb-4">CLIENT DETAILS</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email Address</FormLabel>
+                        <FormControl>
+                          <Input placeholder="your@email.com" type="email" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
                   <FormField
                     control={form.control}
                     name="fullName"
@@ -274,20 +288,6 @@ const ClientIntakeForm = () => {
                         <FormLabel>Company/Brand Name</FormLabel>
                         <FormControl>
                           <Input placeholder="Your company" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Email Address</FormLabel>
-                        <FormControl>
-                          <Input placeholder="your@email.com" type="email" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -343,7 +343,7 @@ const ClientIntakeForm = () => {
                     name="socialMedia"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Social Media Handles (Instagram, LinkedIn, etc.)</FormLabel>
+                        <FormLabel>Social Media Handles</FormLabel>
                         <FormControl>
                           <Textarea placeholder="@yourcompany (Instagram), etc." {...field} />
                         </FormControl>
@@ -374,7 +374,7 @@ const ClientIntakeForm = () => {
               
               {/* Section 2: Project Overview */}
               <div>
-                <h3 className="text-xl font-semibold mb-4">SECTION 2: PROJECT OVERVIEW</h3>
+                <h3 className="text-xl font-semibold mb-4">PROJECT OVERVIEW</h3>
                 <FormField
                   control={form.control}
                   name="projectTitle"
@@ -421,7 +421,7 @@ const ClientIntakeForm = () => {
                 </div>
                 
                 <div className="mt-4">
-                  <FormLabel>What is the objective of this project? (Check all that apply)</FormLabel>
+                  <FormLabel>What is the objective of this project? (Select all that apply)</FormLabel>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2">
                     {objectives.map((objective) => (
                       <FormField
@@ -449,6 +449,7 @@ const ClientIntakeForm = () => {
                       />
                     ))}
                   </div>
+                  
                   {form.watch("objectives")?.includes("other") && (
                     <FormField
                       control={form.control}
@@ -471,7 +472,7 @@ const ClientIntakeForm = () => {
                     name="description"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Brief Description of the Project/Initiative</FormLabel>
+                        <FormLabel>Brief Description of the Project</FormLabel>
                         <FormControl>
                           <Textarea 
                             placeholder="Please describe your project in detail..." 
@@ -539,7 +540,7 @@ const ClientIntakeForm = () => {
               
               {/* Section 3: Creative Talent Needs */}
               <div>
-                <h3 className="text-xl font-semibold mb-4">SECTION 3: CREATIVE TALENT NEEDS</h3>
+                <h3 className="text-xl font-semibold mb-4">CREATIVE TALENT NEEDS</h3>
                 <p className="mb-4">What creative services are you looking to hire? (Check all that apply)</p>
                 
                 <div className="mt-4">
@@ -733,7 +734,7 @@ const ClientIntakeForm = () => {
               
               {/* Section 4: Brand & Style Guidelines */}
               <div>
-                <h3 className="text-xl font-semibold mb-4">SECTION 4: BRAND & STYLE GUIDELINES</h3>
+                <h3 className="text-xl font-semibold mb-4">BRAND & STYLE GUIDELINES</h3>
                 <FormField
                   control={form.control}
                   name="hasBrandGuidelines"
@@ -750,7 +751,7 @@ const ClientIntakeForm = () => {
                             <FormControl>
                               <RadioGroupItem value="yes" />
                             </FormControl>
-                            <FormLabel className="font-normal">Yes (Please upload)</FormLabel>
+                            <FormLabel className="font-normal">Yes</FormLabel>
                           </FormItem>
                           <FormItem className="flex items-center space-x-2 space-y-0">
                             <FormControl>
@@ -827,7 +828,7 @@ const ClientIntakeForm = () => {
               
               {/* Section 5: Audience Targeting */}
               <div>
-                <h3 className="text-xl font-semibold mb-4">SECTION 5: AUDIENCE TARGETING</h3>
+                <h3 className="text-xl font-semibold mb-4">AUDIENCE TARGETING</h3>
                 <FormField
                   control={form.control}
                   name="targetAudience"
@@ -928,7 +929,7 @@ const ClientIntakeForm = () => {
               
               {/* Section 6: Budget & Payment */}
               <div>
-                <h3 className="text-xl font-semibold mb-4">SECTION 6: BUDGET & PAYMENT</h3>
+                <h3 className="text-xl font-semibold mb-4">BUDGET & PAYMENT</h3>
                 <FormField
                   control={form.control}
                   name="budgetRange"
@@ -1021,7 +1022,7 @@ const ClientIntakeForm = () => {
               
               {/* Section 7: Deliverables & Expectations */}
               <div>
-                <h3 className="text-xl font-semibold mb-4">SECTION 7: DELIVERABLES & EXPECTATIONS</h3>
+                <h3 className="text-xl font-semibold mb-4">DELIVERABLES & EXPECTATIONS</h3>
                 <FormField
                   control={form.control}
                   name="deliverables"
@@ -1102,7 +1103,7 @@ const ClientIntakeForm = () => {
               
               {/* Section 8: Communication & Approvals */}
               <div>
-                <h3 className="text-xl font-semibold mb-4">SECTION 8: COMMUNICATION & APPROVALS</h3>
+                <h3 className="text-xl font-semibold mb-4">COMMUNICATION & APPROVALS</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
@@ -1214,7 +1215,7 @@ const ClientIntakeForm = () => {
               </div>
               
               <div className="mt-8">
-                <Button type="submit" className="w-full md:w-auto" size="lg">
+                <Button type="submit" className="w-full md:w-auto bg-amber-500 hover:bg-amber-600" size="lg">
                   Submit Application
                 </Button>
               </div>
