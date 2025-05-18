@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
@@ -102,7 +103,7 @@ const Index = () => {
             </div>
             <div className="hidden md:flex justify-center">
               <img 
-                src="/lovable-uploads/90e525c1-9643-4777-b523-84b6d202cb2d.png" 
+                src="/lovable-uploads/68ecf5be-d49e-44e8-95f0-41d9ad328ccc.jpeg" 
                 alt="Creative professional at work" 
                 className="w-full max-w-lg rounded-lg shadow-xl" 
               />

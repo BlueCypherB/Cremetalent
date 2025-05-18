@@ -1,416 +1,413 @@
 
-import React from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Checkbox } from '@/components/ui/checkbox';
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-
-const formSchema = z.object({
-  fullName: z.string().min(2, { message: 'Name must be at least 2 characters' }),
-  email: z.string().email({ message: 'Please enter a valid email address' }),
-  phone: z.string().min(7, { message: 'Please enter a valid phone number' }),
-  location: z.string().min(2, { message: 'Please enter your location' }),
-  disciplines: z.array(z.string()).nonempty({ message: 'Please select at least one discipline' }),
-  skillTags: z.string().optional(),
-  proficiencyLevel: z.enum(['Beginner', 'Intermediate', 'Advanced']),
-  yearsExperience: z.string().min(1, { message: 'Please enter your years of experience' }),
-  portfolioUrls: z.string().min(5, { message: 'Please provide at least one portfolio URL' }),
-  socialLinks: z.string().optional(),
-  workType: z.array(z.string()).nonempty({ message: 'Please select at least one work type' }),
-  bio: z.string().min(20, { message: 'Bio should be at least 20 characters' }),
-  availability: z.string().min(1, { message: 'Please enter your availability' }),
-});
-
-type FormValues = z.infer<typeof formSchema>;
+import React, { useState } from 'react';
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { toast } from "@/components/ui/use-toast";
+import { useNavigate } from 'react-router-dom';
 
 const ApplicationForm = () => {
-  const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      fullName: '',
-      email: '',
-      phone: '',
-      location: '',
-      disciplines: [],
-      skillTags: '',
-      proficiencyLevel: 'Intermediate',
-      yearsExperience: '',
-      portfolioUrls: '',
-      socialLinks: '',
-      workType: [],
-      bio: '',
-      availability: '',
-    },
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    city: '',
+    country: '',
+    specialization: '',
+    experienceLevel: '',
+    availability: '',
+    bio: '',
+    skills: '',
+    portfolioUrl: '',
+    resumeFile: null as File | null,
+    linkedin: '',
+    instagram: '',
+    twitter: '',
+    heardFrom: '',
+    acceptTerms: false
   });
-
-  function onSubmit(data: FormValues) {
-    console.log(data);
-    // In a real implementation, this would send the data to your backend
-    alert('Application submitted successfully! We will review your application and get back to you soon.');
-    form.reset();
-  }
-
-  const disciplines = [
-    { id: 'graphic-design', label: 'Graphic Design' },
-    { id: 'photography', label: 'Photography' },
-    { id: 'videography', label: 'Videography' },
-    { id: 'copywriting', label: 'Copywriting' },
-    { id: 'social-media', label: 'Social Media Management' },
-    { id: 'brand-strategy', label: 'Brand Strategy' },
-    { id: 'ui-ux', label: 'UI/UX Design' },
-  ];
-
-  const workTypes = [
-    { id: 'freelance', label: 'Freelance' },
-    { id: 'contract', label: 'Contract' },
-    { id: 'full-time', label: 'Full-time' },
-    { id: 'remote', label: 'Remote' },
-  ];
-
+  
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value, type } = e.target;
+    
+    if (type === 'checkbox') {
+      setFormData({
+        ...formData,
+        // @ts-ignore - TypeScript doesn't know this is a checkbox input
+        [name]: e.target.checked
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value
+      });
+    }
+  };
+  
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setFormData({
+        ...formData,
+        resumeFile: e.target.files[0]
+      });
+    }
+  };
+  
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    // Simulate form submission
+    setTimeout(() => {
+      try {
+        // Save application data to localStorage
+        const existingApplications = localStorage.getItem('talentApplications');
+        let applications = existingApplications ? JSON.parse(existingApplications) : [];
+        
+        // Add new application
+        applications.push({...formData});
+        
+        // Save back to localStorage
+        localStorage.setItem('talentApplications', JSON.stringify(applications));
+        
+        // Show success message
+        toast({
+          title: "Application Submitted",
+          description: "Your talent profile has been successfully submitted.",
+        });
+        
+        // Reset form
+        setFormData({
+          firstName: '',
+          lastName: '',
+          email: '',
+          phone: '',
+          city: '',
+          country: '',
+          specialization: '',
+          experienceLevel: '',
+          availability: '',
+          bio: '',
+          skills: '',
+          portfolioUrl: '',
+          resumeFile: null,
+          linkedin: '',
+          instagram: '',
+          twitter: '',
+          heardFrom: '',
+          acceptTerms: false
+        });
+        
+        // Redirect to talent pool page
+        setTimeout(() => {
+          navigate('/talent-pool');
+        }, 1500);
+      } catch (error) {
+        console.error("Error submitting application:", error);
+        toast({
+          title: "Submission Error",
+          description: "There was an error submitting your application. Please try again.",
+          variant: "destructive",
+        });
+      } finally {
+        setIsSubmitting(false);
+      }
+    }, 1000);
+  };
+  
   return (
-    <div className="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold mb-6">Join Our Talent Pool</h2>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          {/* Personal Information */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold border-b pb-2">Personal Information</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="fullName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Full Name*</FormLabel>
-                    <FormControl>
-                      <Input placeholder="John Doe" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+    <div className="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-sm">
+      <h2 className="text-2xl font-bold mb-6">Talent Application</h2>
+      
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Personal Information */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold border-b pb-2">Personal Information</h3>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="firstName">First Name*</Label>
+              <Input 
+                id="firstName"
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleChange}
+                required
               />
-              <FormField
-                control={form.control}
+            </div>
+            <div>
+              <Label htmlFor="lastName">Last Name*</Label>
+              <Input 
+                id="lastName"
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="email">Email*</Label>
+              <Input 
+                id="email"
                 name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email Address*</FormLabel>
-                    <FormControl>
-                      <Input placeholder="you@example.com" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                type="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
               />
-              <FormField
-                control={form.control}
+            </div>
+            <div>
+              <Label htmlFor="phone">Phone Number*</Label>
+              <Input 
+                id="phone"
                 name="phone"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Phone Number*</FormLabel>
-                    <FormControl>
-                      <Input placeholder="+1 (555) 123-4567" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="location"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Location*</FormLabel>
-                    <FormControl>
-                      <Input placeholder="City, State, Country" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+                value={formData.phone}
+                onChange={handleChange}
+                required
               />
             </div>
           </div>
-
-          {/* Professional Information */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold border-b pb-2">Professional Information</h3>
-            
-            <FormField
-              control={form.control}
-              name="disciplines"
-              render={() => (
-                <FormItem>
-                  <div className="mb-4">
-                    <FormLabel>Creative Discipline(s)*</FormLabel>
-                    <FormDescription>
-                      Select all that apply to your expertise
-                    </FormDescription>
-                  </div>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                    {disciplines.map((discipline) => (
-                      <FormField
-                        key={discipline.id}
-                        control={form.control}
-                        name="disciplines"
-                        render={({ field }) => {
-                          return (
-                            <FormItem
-                              key={discipline.id}
-                              className="flex flex-row items-start space-x-3 space-y-0"
-                            >
-                              <FormControl>
-                                <Checkbox
-                                  checked={field.value?.includes(discipline.id)}
-                                  onCheckedChange={(checked) => {
-                                    return checked
-                                      ? field.onChange([...field.value, discipline.id])
-                                      : field.onChange(
-                                          field.value?.filter(
-                                            (value) => value !== discipline.id
-                                          )
-                                        )
-                                  }}
-                                />
-                              </FormControl>
-                              <FormLabel className="font-normal">
-                                {discipline.label}
-                              </FormLabel>
-                            </FormItem>
-                          )
-                        }}
-                      />
-                    ))}
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="skillTags"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Skill Tags (Optional)</FormLabel>
-                  <FormDescription>
-                    Enter specific skills separated by commas (e.g. Adobe Illustrator, Final Cut Pro)
-                  </FormDescription>
-                  <FormControl>
-                    <Input placeholder="Adobe Illustrator, Figma, Final Cut Pro..." {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="proficiencyLevel"
-              render={({ field }) => (
-                <FormItem className="space-y-3">
-                  <FormLabel>Proficiency Level*</FormLabel>
-                  <FormControl>
-                    <RadioGroup
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      className="flex flex-col space-y-1 sm:flex-row sm:space-x-4 sm:space-y-0"
-                    >
-                      <FormItem className="flex items-center space-x-3 space-y-0">
-                        <FormControl>
-                          <RadioGroupItem value="Beginner" />
-                        </FormControl>
-                        <FormLabel className="font-normal">Beginner</FormLabel>
-                      </FormItem>
-                      <FormItem className="flex items-center space-x-3 space-y-0">
-                        <FormControl>
-                          <RadioGroupItem value="Intermediate" />
-                        </FormControl>
-                        <FormLabel className="font-normal">Intermediate</FormLabel>
-                      </FormItem>
-                      <FormItem className="flex items-center space-x-3 space-y-0">
-                        <FormControl>
-                          <RadioGroupItem value="Advanced" />
-                        </FormControl>
-                        <FormLabel className="font-normal">Advanced</FormLabel>
-                      </FormItem>
-                    </RadioGroup>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="yearsExperience"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Years of Experience*</FormLabel>
-                    <FormControl>
-                      <Input placeholder="3+" type="text" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="availability"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Availability (Start Date)*</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Immediate, 2 weeks notice..." {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="city">City*</Label>
+              <Input 
+                id="city"
+                name="city"
+                value={formData.city}
+                onChange={handleChange}
+                required
               />
             </div>
-
-            <FormField
-              control={form.control}
-              name="workType"
-              render={() => (
-                <FormItem>
-                  <div className="mb-4">
-                    <FormLabel>Preferred Work Type*</FormLabel>
-                    <FormDescription>
-                      Select all that apply
-                    </FormDescription>
-                  </div>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                    {workTypes.map((workType) => (
-                      <FormField
-                        key={workType.id}
-                        control={form.control}
-                        name="workType"
-                        render={({ field }) => {
-                          return (
-                            <FormItem
-                              key={workType.id}
-                              className="flex flex-row items-start space-x-3 space-y-0"
-                            >
-                              <FormControl>
-                                <Checkbox
-                                  checked={field.value?.includes(workType.id)}
-                                  onCheckedChange={(checked) => {
-                                    return checked
-                                      ? field.onChange([...field.value, workType.id])
-                                      : field.onChange(
-                                          field.value?.filter(
-                                            (value) => value !== workType.id
-                                          )
-                                        )
-                                  }}
-                                />
-                              </FormControl>
-                              <FormLabel className="font-normal">
-                                {workType.label}
-                              </FormLabel>
-                            </FormItem>
-                          )
-                        }}
-                      />
-                    ))}
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div>
+              <Label htmlFor="country">Country*</Label>
+              <Input 
+                id="country"
+                name="country"
+                value={formData.country}
+                onChange={handleChange}
+                required
+              />
+            </div>
           </div>
-
-          {/* Portfolio & Links */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold border-b pb-2">Portfolio & Links</h3>
-            <FormField
-              control={form.control}
-              name="portfolioUrls"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Portfolio URL(s)*</FormLabel>
-                  <FormDescription>
-                    Enter your portfolio URLs (one per line or separated by commas)
-                  </FormDescription>
-                  <FormControl>
-                    <Textarea 
-                      placeholder="https://www.behance.net/yourname
-https://www.dribbble.com/yourname" 
-                      className="min-h-[100px]" 
-                      {...field} 
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="socialLinks"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Social Media Links (Optional)</FormLabel>
-                  <FormDescription>
-                    Enter your social media links (one per line or separated by commas)
-                  </FormDescription>
-                  <FormControl>
-                    <Textarea 
-                      placeholder="LinkedIn: https://www.linkedin.com/in/yourname
-Instagram: https://www.instagram.com/yourname" 
-                      className="min-h-[100px]" 
-                      {...field} 
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+        </div>
+        
+        {/* Professional Information */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold border-b pb-2">Professional Information</h3>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="specialization">Specialization*</Label>
+              <select 
+                id="specialization"
+                name="specialization"
+                value={formData.specialization}
+                onChange={handleChange}
+                className="w-full p-2 border rounded-md"
+                required
+              >
+                <option value="">Select Specialization</option>
+                <option value="Graphic Design">Graphic Design</option>
+                <option value="UX/UI Design">UX/UI Design</option>
+                <option value="Copywriting">Copywriting</option>
+                <option value="Brand Strategy">Brand Strategy</option>
+                <option value="Photography">Photography</option>
+                <option value="Videography">Videography</option>
+                <option value="Social Media">Social Media</option>
+                <option value="Web Development">Web Development</option>
+                <option value="App Development">App Development</option>
+                <option value="Digital Marketing">Digital Marketing</option>
+                <option value="Animation">Animation</option>
+                <option value="Illustration">Illustration</option>
+                <option value="Content Creation">Content Creation</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div>
+              <Label htmlFor="experienceLevel">Experience Level*</Label>
+              <select 
+                id="experienceLevel"
+                name="experienceLevel"
+                value={formData.experienceLevel}
+                onChange={handleChange}
+                className="w-full p-2 border rounded-md"
+                required
+              >
+                <option value="">Select Experience Level</option>
+                <option value="Beginner">Beginner (0-1 years)</option>
+                <option value="Intermediate">Intermediate (2-4 years)</option>
+                <option value="Advanced">Advanced (5+ years)</option>
+              </select>
+            </div>
           </div>
-
-          {/* Bio */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-semibold border-b pb-2">About You</h3>
-            <FormField
-              control={form.control}
+          
+          <div>
+            <Label htmlFor="availability">Availability*</Label>
+            <select 
+              id="availability"
+              name="availability"
+              value={formData.availability}
+              onChange={handleChange}
+              className="w-full p-2 border rounded-md"
+              required
+            >
+              <option value="">Select Availability</option>
+              <option value="Immediate">Immediate</option>
+              <option value="Two weeks">2 weeks notice</option>
+              <option value="One month">1 month notice</option>
+              <option value="Custom">Custom notice period</option>
+            </select>
+          </div>
+          
+          <div>
+            <Label htmlFor="bio">Professional Bio*</Label>
+            <Textarea 
+              id="bio"
               name="bio"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Short Bio*</FormLabel>
-                  <FormDescription>
-                    Tell us a bit about yourself and your creative journey
-                  </FormDescription>
-                  <FormControl>
-                    <Textarea 
-                      placeholder="I am a creative professional with experience in..." 
-                      className="min-h-[150px]" 
-                      {...field} 
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              value={formData.bio}
+              onChange={handleChange}
+              placeholder="Tell us about your professional background, skills, and experience..."
+              className="min-h-[150px]"
+              required
             />
           </div>
-
-          <div className="pt-4">
-            <Button type="submit" className="w-full md:w-auto">Submit Application</Button>
+          
+          <div>
+            <Label htmlFor="skills">Skills* (comma-separated)</Label>
+            <Input 
+              id="skills"
+              name="skills"
+              value={formData.skills}
+              onChange={handleChange}
+              placeholder="e.g., Adobe Photoshop, Copywriting, Social Media Strategy"
+              required
+            />
           </div>
-        </form>
-      </Form>
+        </div>
+        
+        {/* Portfolio & Resume */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold border-b pb-2">Portfolio & Resume</h3>
+          
+          <div>
+            <Label htmlFor="portfolioUrl">Portfolio URL</Label>
+            <Input 
+              id="portfolioUrl"
+              name="portfolioUrl"
+              type="url"
+              value={formData.portfolioUrl}
+              onChange={handleChange}
+              placeholder="https://yourportfolio.com"
+            />
+          </div>
+          
+          <div>
+            <Label htmlFor="resumeFile">Resume/CV (PDF)</Label>
+            <Input 
+              id="resumeFile"
+              name="resumeFile"
+              type="file"
+              accept=".pdf"
+              onChange={handleFileChange}
+              className="file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-amber-100 file:text-amber-700 hover:file:bg-amber-200"
+            />
+          </div>
+        </div>
+        
+        {/* Social Media & Referral */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold border-b pb-2">Social Media & Referral</h3>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <Label htmlFor="linkedin">LinkedIn Profile</Label>
+              <Input 
+                id="linkedin"
+                name="linkedin"
+                value={formData.linkedin}
+                onChange={handleChange}
+                placeholder="https://linkedin.com/in/username"
+              />
+            </div>
+            <div>
+              <Label htmlFor="instagram">Instagram Profile</Label>
+              <Input 
+                id="instagram"
+                name="instagram"
+                value={formData.instagram}
+                onChange={handleChange}
+                placeholder="@username"
+              />
+            </div>
+            <div>
+              <Label htmlFor="twitter">Twitter/X Profile</Label>
+              <Input 
+                id="twitter"
+                name="twitter"
+                value={formData.twitter}
+                onChange={handleChange}
+                placeholder="@username"
+              />
+            </div>
+          </div>
+          
+          <div>
+            <Label htmlFor="heardFrom">How did you hear about us?</Label>
+            <select 
+              id="heardFrom"
+              name="heardFrom"
+              value={formData.heardFrom}
+              onChange={handleChange}
+              className="w-full p-2 border rounded-md"
+            >
+              <option value="">Select option</option>
+              <option value="Social Media">Social Media</option>
+              <option value="Friend or Colleague">Friend or Colleague</option>
+              <option value="Search Engine">Search Engine</option>
+              <option value="Event">Event</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+        
+        {/* Terms & Conditions */}
+        <div className="space-y-4">
+          <div className="flex items-top space-x-2">
+            <input 
+              id="acceptTerms"
+              name="acceptTerms"
+              type="checkbox"
+              checked={formData.acceptTerms}
+              onChange={handleChange}
+              className="mt-1"
+              required
+            />
+            <Label htmlFor="acceptTerms" className="text-sm">
+              I agree to the Terms and Conditions and acknowledge that my data will be used in accordance with the Privacy Policy. I consent to being contacted about opportunities matching my profile.*
+            </Label>
+          </div>
+        </div>
+        
+        <div className="pt-4">
+          <Button 
+            type="submit"
+            size="lg" 
+            className="w-full"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "Submitting..." : "Submit Application"}
+          </Button>
+        </div>
+      </form>
     </div>
   );
 };

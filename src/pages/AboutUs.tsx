@@ -151,36 +151,16 @@ const AboutUs = () => {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
             <TeamMember 
-              name="Emma Davis"
-              role="Founder & CEO"
-              bio="With over 15 years in creative recruitment, Emma founded CrémeTalent to create meaningful connections between talent and opportunity."
+              name="Pamela Williams"
+              role="CEO"
+              bio="With over 6 years in creative recruitment and brand strategy, Pamela founded CrémeTalent to create meaningful connections between talent and opportunity."
             />
             <TeamMember 
-              name="Marcus Chen"
-              role="Head of Talent Acquisition"
-              bio="Marcus specializes in identifying exceptional creative talent across multiple disciplines and building our extensive talent network."
-            />
-            <TeamMember 
-              name="Sophia Rodriguez"
-              role="Training Director"
-              bio="Sophia develops our training programs, ensuring creative professionals have the skills needed to excel in today's competitive landscape."
-            />
-            <TeamMember 
-              name="James Wilson"
-              role="Client Relations Manager"
-              bio="James works closely with our business clients to understand their needs and deliver tailored talent solutions."
-            />
-            <TeamMember 
-              name="Aisha Patel"
-              role="Career Development Specialist"
-              bio="Aisha guides creative professionals through career transitions and helps them achieve their professional goals."
-            />
-            <TeamMember 
-              name="David Thompson"
-              role="Operations Manager"
-              bio="David ensures all aspects of our recruitment and placement processes run smoothly and efficiently for both clients and creatives."
+              name="Abdulbari Sulaiman"
+              role="Technical Director"
+              bio="Abdulbari leads our technical operations, ensuring that our platform and digital tools effectively connect creative talent with the right opportunities."
             />
           </div>
         </div>

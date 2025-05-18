@@ -1,19 +1,12 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  Sheet, 
-  SheetContent, 
-  SheetHeader, 
-  SheetTitle, 
-  SheetTrigger 
-} from "@/components/ui/sheet";
-import { Textarea } from "@/components/ui/textarea";
+import { toast } from "@/components/ui/use-toast";
 import {
   Search,
   Filter,
@@ -34,8 +27,8 @@ import TalentFilterSidebar from '@/components/talent/TalentFilterSidebar';
 import { TalentData } from '@/types/talent';
 import AdminTalentTable from '@/components/talent/AdminTalentTable';
 
-// Updated talent data with only Pamela Williams
-const sampleTalent: TalentData[] = [
+// Initial talent data
+const initialTalent: TalentData[] = [
   {
     id: 1,
     name: "Pamela Williams",
@@ -48,7 +41,6 @@ const sampleTalent: TalentData[] = [
     skills: ["Brand Strategy", "Copywriting"],
     portfolio: ["www.behance.net/pamela"],
     email: "pam@email.com",
-    // Added admin-related fields
     status: "Active",
     notes: "",
     matchScore: 0,
@@ -64,7 +56,7 @@ const TalentPool = () => {
     location: '',
     availability: ''
   });
-  const [talent, setTalent] = useState(sampleTalent);
+  const [talent, setTalent] = useState(initialTalent);
   const [clientRequirements, setClientRequirements] = useState({
     position: '',
     experienceLevel: '',
@@ -74,6 +66,49 @@ const TalentPool = () => {
   });
   const [activeTab, setActiveTab] = useState('browse');
   const [selectedTalentId, setSelectedTalentId] = useState<number | null>(null);
+  
+  // Load talent data from localStorage when component mounts
+  useEffect(() => {
+    try {
+      const savedTalent = localStorage.getItem('talentApplications');
+      if (savedTalent) {
+        // Parse the saved applications
+        const applications = JSON.parse(savedTalent);
+        
+        // Map the application data to our TalentData format
+        const formattedApplications = applications.map((app: any, index: number) => ({
+          id: initialTalent.length + index + 1,
+          name: `${app.firstName} ${app.lastName}`,
+          photo: null,
+          location: `${app.city}, ${app.country}`,
+          category: app.specialization,
+          experience: app.experienceLevel,
+          availability: app.availability,
+          bio: app.bio,
+          skills: app.skills.split(',').map((skill: string) => skill.trim()),
+          portfolio: [app.portfolioUrl],
+          email: app.email,
+          status: "New",
+          notes: "",
+          matchScore: 0,
+          lastContact: new Date().toISOString().split('T')[0]
+        }));
+        
+        // Combine initial talent with new applications
+        setTalent([...initialTalent, ...formattedApplications]);
+        
+        // Show a success message if new talent was added
+        if (formattedApplications.length > 0) {
+          toast({
+            title: "Talent Pool Updated",
+            description: `${formattedApplications.length} new application(s) loaded from submissions.`,
+          });
+        }
+      }
+    } catch (error) {
+      console.error("Error loading talent applications:", error);
+    }
+  }, []);
   
   const filteredTalent = talent.filter(talentItem => {
     // Search term filter
