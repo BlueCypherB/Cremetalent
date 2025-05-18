@@ -25,7 +25,6 @@ import {
 import TalentCard from '@/components/talent/TalentCard';
 import TalentFilterSidebar from '@/components/talent/TalentFilterSidebar';
 import { TalentData } from '@/types/talent';
-import AdminTalentTable from '@/components/talent/AdminTalentTable';
 
 // Initial talent data
 const initialTalent: TalentData[] = [
@@ -88,7 +87,7 @@ const TalentPool = () => {
           skills: app.skills.split(',').map((skill: string) => skill.trim()),
           portfolio: [app.portfolioUrl],
           email: app.email,
-          status: "New",
+          status: "Active",
           notes: "",
           matchScore: 0,
           lastContact: new Date().toISOString().split('T')[0]
@@ -101,7 +100,7 @@ const TalentPool = () => {
         if (formattedApplications.length > 0) {
           toast({
             title: "Talent Pool Updated",
-            description: `${formattedApplications.length} new application(s) loaded from submissions.`,
+            description: `${formattedApplications.length} approved talent profile(s) loaded.`,
           });
         }
       }
@@ -233,7 +232,7 @@ const TalentPool = () => {
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full max-w-4xl mx-auto">
             <TabsList className="grid w-full grid-cols-2 mb-8">
               <TabsTrigger value="browse">Browse Talent</TabsTrigger>
-              <TabsTrigger value="admin">Admin Dashboard</TabsTrigger>
+              <TabsTrigger value="admin">Match Talent</TabsTrigger>
             </TabsList>
             
             <TabsContent value="browse" className="mt-0">
@@ -313,13 +312,12 @@ const TalentPool = () => {
                     </Button>
                   </div>
                 </div>
-                <AdminTalentTable 
-                  talent={filteredTalent} 
-                  onUpdateStatus={handleUpdateStatus}
-                  onUpdateNotes={handleUpdateNotes}
-                  selectedId={selectedTalentId}
-                  setSelectedId={setSelectedTalentId}
-                />
+                {/* Talent matching results here - similar to the browse view but sorted by match score */}
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                  {filteredTalent.map(talentItem => (
+                    <TalentCard key={talentItem.id} talent={talentItem} />
+                  ))}
+                </div>
               </div>
             </TabsContent>
           </Tabs>

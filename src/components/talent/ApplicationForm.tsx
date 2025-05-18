@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -65,21 +64,27 @@ const ApplicationForm = () => {
     // Simulate form submission
     setTimeout(() => {
       try {
-        // Save application data to localStorage
-        const existingApplications = localStorage.getItem('talentApplications');
+        // Save application data to pending applications in localStorage
+        const existingApplications = localStorage.getItem('pendingTalentApplications');
         let applications = existingApplications ? JSON.parse(existingApplications) : [];
         
         // Add new application
         applications.push({...formData});
         
         // Save back to localStorage
-        localStorage.setItem('talentApplications', JSON.stringify(applications));
+        localStorage.setItem('pendingTalentApplications', JSON.stringify(applications));
         
         // Show success message
         toast({
           title: "Application Submitted",
-          description: "Your talent profile has been successfully submitted.",
+          description: "Your talent profile has been submitted for review. We will notify you once it's approved.",
         });
+        
+        // Send notification email to admin
+        sendAdminNotificationEmail(formData);
+        
+        // Send confirmation email to applicant
+        sendApplicantConfirmationEmail(formData.email, formData.firstName);
         
         // Reset form
         setFormData({
@@ -103,7 +108,7 @@ const ApplicationForm = () => {
           acceptTerms: false
         });
         
-        // Redirect to talent pool page
+        // Redirect back to talent pool page
         setTimeout(() => {
           navigate('/talent-pool');
         }, 1500);
@@ -118,6 +123,27 @@ const ApplicationForm = () => {
         setIsSubmitting(false);
       }
     }, 1000);
+  };
+
+  // Helper function to send notification email to admin
+  const sendAdminNotificationEmail = (applicationData: typeof formData) => {
+    console.log('Sending admin notification email about new application');
+    console.log(`Applicant: ${applicationData.firstName} ${applicationData.lastName}`);
+    console.log(`Email: ${applicationData.email}`);
+    console.log(`Specialization: ${applicationData.specialization}`);
+    
+    // In a real application, this would send an actual email
+    // For now, we're just logging to the console
+  };
+
+  // Helper function to send confirmation email to applicant
+  const sendApplicantConfirmationEmail = (email: string, firstName: string) => {
+    console.log(`Sending confirmation email to ${email}`);
+    console.log(`Subject: Application Received - CrémeTalent`);
+    console.log(`Message: Dear ${firstName}, thank you for your application. We have received your submission and will review it shortly.`);
+    
+    // In a real application, this would send an actual email
+    // For now, we're just logging to the console
   };
   
   return (

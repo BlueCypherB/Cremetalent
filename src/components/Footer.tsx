@@ -3,6 +3,24 @@ import React from 'react';
 import { HandHeart, Phone, Mail, MapPin, Clock, Linkedin, Instagram, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
+// Helper function to send notification emails (placeholder)
+export const sendEmail = (to: string, subject: string, body: string) => {
+  // In a real application, this would connect to an email service
+  // For demonstration purposes, we'll just log the email details
+  console.log('Sending email:');
+  console.log(`To: ${to}`);
+  console.log(`Subject: ${subject}`);
+  console.log(`Body: ${body}`);
+  
+  // Return a promise to simulate async behavior
+  return new Promise<void>((resolve) => {
+    setTimeout(() => {
+      console.log('Email sent successfully');
+      resolve();
+    }, 1000);
+  });
+};
+
 const Footer = () => {
   const currentYear = new Date().getFullYear();
   
@@ -41,7 +59,7 @@ const Footer = () => {
               <li><Link to="/services" className="text-amber-100 hover:text-white transition-colors">Services</Link></li>
               <li><Link to="/how-it-works" className="text-amber-100 hover:text-white transition-colors">How It Works</Link></li>
               <li><Link to="/talent-pool" className="text-amber-100 hover:text-white transition-colors">Talent Pool</Link></li>
-              <li><Link to="/contact" className="text-amber-100 hover:text-white transition-colors">Contact</Link></li>
+              <li><Link to="/admin/login" className="text-amber-100 hover:text-white transition-colors">Admin Portal</Link></li>
             </ul>
           </div>
           
@@ -89,6 +107,7 @@ const Footer = () => {
         {/* Copyright */}
         <div className="border-t border-amber-700 pt-6 mt-6 text-center text-amber-300 text-sm">
           <p>© {currentYear} CrémeTalent. All rights reserved.</p>
+          <p className="mt-2 text-xs">Admin access: <Link to="/admin/login" className="underline">Login to Admin Portal</Link></p>
         </div>
       </div>
     </footer>
