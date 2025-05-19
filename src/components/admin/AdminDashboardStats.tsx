@@ -11,13 +11,18 @@ interface AdminDashboardStatsProps {
 const AdminDashboardStats = ({ pendingCount, approvedCount, rejectedCount }: AdminDashboardStatsProps) => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-      <Card>
+      <Card className={pendingCount > 0 ? "border-amber-300" : ""}>
         <CardHeader className="pb-2">
           <CardTitle className="text-2xl">Pending Review</CardTitle>
           <CardDescription>New talent applications awaiting review</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="text-3xl font-bold">{pendingCount}</div>
+          <div className={`text-3xl font-bold ${pendingCount > 0 ? "text-amber-600" : ""}`}>
+            {pendingCount}
+          </div>
+          {pendingCount > 0 && (
+            <p className="text-sm text-amber-600 mt-1">Needs your attention</p>
+          )}
         </CardContent>
       </Card>
       

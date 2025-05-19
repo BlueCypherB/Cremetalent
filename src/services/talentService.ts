@@ -1,6 +1,8 @@
 
 import { TalentData } from '@/types/talent';
 
+const CREME_TALENT_EMAIL = "info@cremetalent.com";
+
 // Helper function to simulate sending an email notification
 export const sendNotificationEmail = (email: string, subject: string, message: string) => {
   console.log(`Sending email to: ${email}`);
@@ -9,6 +11,11 @@ export const sendNotificationEmail = (email: string, subject: string, message: s
   
   // In a real application, you would integrate with an email service
   // This is just a placeholder for demonstration purposes
+};
+
+// Function to send notification to CremeTalent admin
+export const sendAdminNotification = (subject: string, message: string) => {
+  sendNotificationEmail(CREME_TALENT_EMAIL, subject, message);
 };
 
 export const loadTalentData = () => {
@@ -155,6 +162,13 @@ export const approveTalent = (talent: TalentData, pendingTalent: TalentData[]) =
       `Congratulations! Your application to join the CrémeTalent talent pool has been approved. 
        Your profile is now visible in our talent pool.`);
     
+    // Notify admin about the approval
+    sendAdminNotification("Talent Application Approved", 
+      `A talent application has been approved:
+       Name: ${talent.name}
+       Email: ${talent.email}
+       Category: ${talent.category}`);
+    
     return { newPendingList, talent };
   } catch (error) {
     console.error("Error approving application:", error);
@@ -219,6 +233,13 @@ export const rejectTalent = (talent: TalentData, rejectionReason: string, pendin
       `Thank you for your interest in joining the CrémeTalent talent pool. 
        After careful review, we regret to inform you that we are unable to accept your application at this time. 
        ${rejectionReason ? `Reason: ${rejectionReason}` : ''}`);
+    
+    // Notify admin about the rejection
+    sendAdminNotification("Talent Application Rejected", 
+      `A talent application has been rejected:
+       Name: ${talent.name}
+       Email: ${talent.email}
+       Reason: ${rejectionReason || "No reason provided"}`);
     
     // Create rejected talent data object
     const rejectedTalentData = {

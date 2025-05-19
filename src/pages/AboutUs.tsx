@@ -8,7 +8,8 @@ import {
   Lightbulb, 
   Shield, 
   Award, 
-  Brush
+  Brush,
+  Users
 } from 'lucide-react';
 
 const ValueCard = ({ icon: Icon, title, description }: { 
@@ -136,6 +137,11 @@ const AboutUs = () => {
               icon={Brush} 
               title="Creativity" 
               description="We celebrate and foster creative expression, recognizing it as the driving force of the industries we serve."
+            />
+            <ValueCard 
+              icon={Users} 
+              title="Collaboration" 
+              description="We believe in the power of teamwork and partnership, bringing together diverse talents to achieve exceptional results."
             />
           </div>
         </div>

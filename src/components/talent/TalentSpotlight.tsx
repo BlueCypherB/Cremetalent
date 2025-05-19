@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -6,55 +5,82 @@ import { Badge } from "@/components/ui/badge";
 import { Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { loadTalentData } from '@/services/talentService';
 
-// Sample talent data for the random spotlight selection
-// In a real app, this would come from your API or database
-const sampleTalent = [
-  {
-    id: 1,
-    name: "Amara Johnson",
-    avatar: "/lovable-uploads/90e525c1-9643-4777-b523-84b6d202cb2d.png",
-    role: "Graphic Designer",
-    skills: ["Adobe Photoshop", "Illustrator", "UI/UX"],
-    bio: "Award-winning graphic designer with 5+ years of experience creating stunning visual identities and brand materials.",
-    rating: 4.9
-  },
-  {
-    id: 2,
-    name: "Tunde Okafor",
-    avatar: "",
-    role: "Videographer",
-    skills: ["Video Editing", "Animation", "Storytelling"],
-    bio: "Creative videographer specializing in documentary-style corporate videos and emotionally engaging storytelling.",
-    rating: 4.8
-  },
-  {
-    id: 3,
-    name: "Zainab Ahmed",
-    avatar: "",
-    role: "Content Writer",
-    skills: ["Copywriting", "Blog Writing", "SEO"],
-    bio: "Versatile content writer with a knack for creating compelling narratives that drive engagement and conversions.",
-    rating: 4.7
-  },
-  {
-    id: 4,
-    name: "David Nnamdi",
-    avatar: "",
-    role: "Web Developer",
-    skills: ["React", "Node.js", "UI Design"],
-    bio: "Full-stack developer passionate about creating smooth, responsive user experiences with clean, efficient code.",
-    rating: 4.9
-  }
-];
+const SPOTLIGHT_REFRESH_INTERVAL = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
 
 const TalentSpotlight = () => {
-  const [spotlightTalent, setSpotlightTalent] = useState<typeof sampleTalent[0] | null>(null);
-  
+  const [spotlightTalent, setSpotlightTalent] = useState<any | null>(null);
+
   useEffect(() => {
-    // Select a random talent from the sample data when component mounts
-    const randomIndex = Math.floor(Math.random() * sampleTalent.length);
-    setSpotlightTalent(sampleTalent[randomIndex]);
+    const selectFeaturedTalent = () => {
+      // Load approved talent from the talent pool
+      const { approvedTalent } = loadTalentData();
+      
+      if (approvedTalent.length === 0) {
+        // No approved talent available, use the sample data
+        console.log("No approved talent available for spotlight");
+        return null;
+      }
+      
+      // If only one talent is available, select that one
+      if (approvedTalent.length === 1) {
+        console.log("Only one talent available, selecting them for spotlight");
+        return {
+          id: approvedTalent[0].id,
+          name: approvedTalent[0].name,
+          avatar: approvedTalent[0].photo || "",
+          role: approvedTalent[0].category,
+          skills: approvedTalent[0].skills,
+          bio: approvedTalent[0].bio,
+          rating: 4.9 // Default rating since we don't have real ratings yet
+        };
+      }
+      
+      // If multiple talents are available, select one randomly based on the current week
+      // This ensures the selection stays the same for a week
+      const currentDate = new Date();
+      const startOfYear = new Date(currentDate.getFullYear(), 0, 1);
+      const weekNumber = Math.floor((currentDate.getTime() - startOfYear.getTime()) / (7 * 24 * 60 * 60 * 1000));
+      
+      // Use the week number to get a consistent index for the week
+      const selectedIndex = weekNumber % approvedTalent.length;
+      const selected = approvedTalent[selectedIndex];
+      
+      console.log(`Selected talent for spotlight: ${selected.name} (Week ${weekNumber})`);
+      
+      return {
+        id: selected.id,
+        name: selected.name,
+        avatar: selected.photo || "",
+        role: selected.category,
+        skills: selected.skills,
+        bio: selected.bio,
+        rating: 4.9 // Default rating since we don't have real ratings yet
+      };
+    };
+    
+    // Check localStorage for an existing spotlight talent and its timestamp
+    const savedSpotlight = localStorage.getItem('spotlightTalent');
+    const savedTimestamp = localStorage.getItem('spotlightTimestamp');
+    const currentTime = new Date().getTime();
+    
+    if (savedSpotlight && savedTimestamp && (currentTime - Number(savedTimestamp)) < SPOTLIGHT_REFRESH_INTERVAL) {
+      // If we have a saved spotlight talent that's less than a week old, use it
+      setSpotlightTalent(JSON.parse(savedSpotlight));
+      console.log("Using saved spotlight talent from localStorage");
+    } else {
+      // Otherwise, select a new spotlight talent
+      const selected = selectFeaturedTalent();
+      
+      if (selected) {
+        setSpotlightTalent(selected);
+        // Save to localStorage with current timestamp
+        localStorage.setItem('spotlightTalent', JSON.stringify(selected));
+        localStorage.setItem('spotlightTimestamp', currentTime.toString());
+        console.log("Selected new spotlight talent and saved to localStorage");
+      }
+    }
   }, []);
 
   if (!spotlightTalent) return null;
@@ -74,7 +100,7 @@ const TalentSpotlight = () => {
                 <Avatar className="h-32 w-32 border-4 border-amber-100">
                   <AvatarImage src={spotlightTalent.avatar} alt={spotlightTalent.name} />
                   <AvatarFallback className="text-3xl bg-amber-200">
-                    {spotlightTalent.name.split(' ').map(n => n[0]).join('')}
+                    {spotlightTalent.name.split(' ').map((n: string) => n[0]).join('')}
                   </AvatarFallback>
                 </Avatar>
               </div>
@@ -94,7 +120,7 @@ const TalentSpotlight = () => {
                 <div className="mb-4">
                   <p className="text-sm font-semibold text-gray-500 mb-2">Skills:</p>
                   <div className="flex flex-wrap gap-2">
-                    {spotlightTalent.skills.map((skill, index) => (
+                    {spotlightTalent.skills.map((skill: string, index: number) => (
                       <Badge key={index} variant="outline" className="bg-amber-50">{skill}</Badge>
                     ))}
                   </div>
