@@ -32,7 +32,8 @@ const AdminDashboardStats = ({ pendingCount, approvedCount, rejectedCount }: Adm
           <CardDescription>Currently active in talent pool</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="text-3xl font-bold">{approvedCount}</div>
+          <div className="text-3xl font-bold text-green-600">{approvedCount}</div>
+          <p className="text-sm text-muted-foreground mt-1">Available for projects</p>
         </CardContent>
       </Card>
       
@@ -42,7 +43,8 @@ const AdminDashboardStats = ({ pendingCount, approvedCount, rejectedCount }: Adm
           <CardDescription>Applications that didn't meet criteria</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="text-3xl font-bold">{rejectedCount}</div>
+          <div className="text-3xl font-bold text-gray-600">{rejectedCount}</div>
+          <p className="text-sm text-muted-foreground mt-1">Archived applications</p>
         </CardContent>
       </Card>
     </div>

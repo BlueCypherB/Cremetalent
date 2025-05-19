@@ -1,7 +1,7 @@
 
 import { TalentData } from '@/types/talent';
 
-const CREME_TALENT_EMAIL = "info@cremetalent.com";
+const CREME_TALENT_EMAIL = "Cremetalentafrica@gmail.com";
 
 // Helper function to simulate sending an email notification
 export const sendNotificationEmail = (email: string, subject: string, message: string) => {

@@ -128,6 +128,7 @@ const ApplicationForm = () => {
   // Helper function to send notification email to admin
   const sendAdminNotificationEmail = (applicationData: typeof formData) => {
     console.log('Sending admin notification email about new application');
+    console.log(`Sending to: Cremetalentafrica@gmail.com`);
     console.log(`Applicant: ${applicationData.firstName} ${applicationData.lastName}`);
     console.log(`Email: ${applicationData.email}`);
     console.log(`Specialization: ${applicationData.specialization}`);
