@@ -1,339 +1,420 @@
-
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import { Reveal } from '@/components/Reveal';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
-  Search,
-  Calendar,
-  Clock,
-  User,
-  Tag,
-  ArrowRight
+  Search, Calendar, Clock, User, Tag, ArrowRight,
+  BookOpen, Sparkles, AlertCircle,
 } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/lib/supabase';
+import type { BlogPost } from '@/lib/database.types';
+import { toast } from "@/components/ui/use-toast";
+import { format } from 'date-fns';
 
-// Sample blog post data
-const blogPosts = [
-  {
-    id: 1,
-    title: "Navigating the Creative Job Market in 2025",
-    excerpt: "How to position yourself for success in a rapidly evolving creative economy with emerging technologies and changing client expectations.",
-    category: "Career Advice",
-    author: "Emma Davis",
-    date: "May 3, 2025",
-    readTime: "8 min read",
-    image: null,
-    featured: true
-  },
-  {
-    id: 2,
-    title: "Top Skills Employers Look for in Creatives",
-    excerpt: "Beyond technical prowess: the soft skills and adaptability traits that make creative professionals stand out to potential employers.",
-    category: "Career Development",
-    author: "Marcus Chen",
-    date: "April 28, 2025",
-    readTime: "10 min read",
-    image: null,
-    featured: true
-  },
-  {
-    id: 3,
-    title: "Building a Sustainable Creative Career",
-    excerpt: "Strategies for long-term success and fulfillment in the creative industry, from financial planning to avoiding burnout.",
-    category: "Work-Life Balance",
-    author: "Sophia Rodriguez",
-    date: "April 22, 2025",
-    readTime: "12 min read",
-    image: null,
-    featured: true
-  },
-  {
-    id: 4,
-    title: "The Rise of AI in Creative Work",
-    excerpt: "How artificial intelligence is transforming creative processes and what professionals need to know to stay relevant.",
-    category: "Industry Trends",
-    author: "James Wilson",
-    date: "April 15, 2025",
-    readTime: "9 min read",
-    image: null
-  },
-  {
-    id: 5,
-    title: "Crafting a Portfolio That Gets Noticed",
-    excerpt: "Expert tips for creating a standout creative portfolio that showcases your best work and attracts ideal clients or employers.",
-    category: "Portfolio Tips",
-    author: "Aisha Patel",
-    date: "April 8, 2025",
-    readTime: "7 min read",
-    image: null
-  },
-  {
-    id: 6,
-    title: "Networking Strategies for Introverted Creatives",
-    excerpt: "How to build professional connections and find opportunities when networking doesn't come naturally to you.",
-    category: "Networking",
-    author: "David Thompson",
-    date: "April 1, 2025",
-    readTime: "6 min read",
-    image: null
-  },
-  {
-    id: 7,
-    title: "From Freelancer to Agency: Growth Strategies",
-    excerpt: "The roadmap for scaling your solo creative practice into a thriving agency with a team and diverse client base.",
-    category: "Business Growth",
-    author: "Emma Davis",
-    date: "March 25, 2025",
-    readTime: "11 min read",
-    image: null
-  },
-  {
-    id: 8,
-    title: "Creative Collaboration in Remote Teams",
-    excerpt: "Tools, techniques, and best practices for maintaining creative synergy when working with distributed teams.",
-    category: "Remote Work",
-    author: "Marcus Chen",
-    date: "March 18, 2025",
-    readTime: "9 min read",
-    image: null
-  },
+// ─── Data ─────────────────────────────────────────────────────────────────────
+
+const CATEGORIES = [
+  'All Categories',
+  'Career Advice',
+  'Career Development',
+  'Work-Life Balance',
+  'Industry Trends',
+  'Portfolio Tips',
+  'Networking',
+  'Business Growth',
+  'Remote Work',
 ];
 
-// Blog post categories
-const categories = [
-  "All Categories",
-  "Career Advice",
-  "Career Development",
-  "Work-Life Balance",
-  "Industry Trends",
-  "Portfolio Tips",
-  "Networking",
-  "Business Growth",
-  "Remote Work"
-];
+// ─── Shared sub-components ────────────────────────────────────────────────────
 
-const FeaturedPostCard = ({ post }: { post: typeof blogPosts[0] }) => (
-  <Card className="overflow-hidden h-full">
-    <div className="grid grid-cols-1 md:grid-cols-2 h-full">
-      <div className="aspect-square md:aspect-auto bg-amber-50 flex items-center justify-center">
-        {post.image ? (
-          <img src={post.image} alt={post.title} className="w-full h-full object-cover" />
-        ) : (
-          <div className="text-4xl font-bold text-amber-200">CT</div>
-        )}
+const PostThumbnail = ({ post }: { post: BlogPost }) => (
+  <div className="w-full h-full bg-gradient-to-br from-amber-50 to-amber-100/50 overflow-hidden">
+    {post.image_url ? (
+      <img
+        src={post.image_url}
+        alt={post.title}
+        className="w-full h-full object-cover"
+        loading="lazy"
+      />
+    ) : (
+      <div className="w-full h-full flex items-center justify-center">
+        <BookOpen className="h-12 w-12 text-amber-300" />
       </div>
-      <CardContent className="p-6 flex flex-col">
-        <div className="flex items-center text-sm text-muted-foreground mb-2">
-          <Tag className="h-4 w-4 mr-1" />
-          <span>{post.category}</span>
-        </div>
-        
-        <h2 className="text-2xl font-bold mb-3">{post.title}</h2>
-        <p className="text-muted-foreground mb-4 flex-grow">{post.excerpt}</p>
-        
-        <div className="flex justify-between items-center pt-4 border-t">
-          <div className="flex items-center">
-            <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center mr-2">
-              <User className="h-4 w-4 text-amber-600" />
-            </div>
-            <span className="text-sm">{post.author}</span>
-          </div>
-          
-          <div className="flex items-center text-xs text-muted-foreground">
-            <Calendar className="h-3 w-3 mr-1" />
-            <span>{post.date}</span>
-            <span className="mx-2">•</span>
-            <Clock className="h-3 w-3 mr-1" />
-            <span>{post.readTime}</span>
-          </div>
-        </div>
-        
-        <Button className="mt-4" variant="outline">
-          Read Article
-          <ArrowRight className="ml-2 h-4 w-4" />
-        </Button>
-      </CardContent>
-    </div>
-  </Card>
+    )}
+  </div>
 );
 
-const BlogPostCard = ({ post }: { post: typeof blogPosts[0] }) => (
-  <Card className="h-full flex flex-col">
-    <div className="aspect-video bg-amber-50 flex items-center justify-center">
-      {post.image ? (
-        <img src={post.image} alt={post.title} className="w-full h-full object-cover" />
-      ) : (
-        <div className="text-4xl font-bold text-amber-200">CT</div>
-      )}
-    </div>
-    
-    <CardContent className="p-6 flex-grow flex flex-col">
-      <div className="flex items-center text-sm text-muted-foreground mb-2">
-        <Tag className="h-4 w-4 mr-1" />
-        <span>{post.category}</span>
-      </div>
-      
-      <h3 className="font-semibold text-lg mb-2">{post.title}</h3>
-      <p className="text-muted-foreground mb-4 flex-grow">{post.excerpt}</p>
-      
-      <div className="flex justify-between items-center pt-4 border-t">
-        <div className="flex items-center">
-          <div className="w-6 h-6 rounded-full bg-amber-100 flex items-center justify-center mr-2">
-            <User className="h-3 w-3 text-amber-600" />
-          </div>
-          <span className="text-sm">{post.author}</span>
-        </div>
-        
-        <div className="flex items-center text-xs text-muted-foreground">
-          <Calendar className="h-3 w-3 mr-1" />
-          <span>{post.date}</span>
-          <span className="mx-1">•</span>
-          <Clock className="h-3 w-3 mr-1" />
-          <span>{post.readTime}</span>
-        </div>
-      </div>
-    </CardContent>
-    
-    <div className="px-6 pb-6">
-      <Button variant="outline" size="sm" className="w-full">
-        Read Article
-      </Button>
-    </div>
-  </Card>
+const CategoryPill = ({ category }: { category: string }) => (
+  <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-50 text-amber-700 rounded-full text-xs font-medium border border-amber-100">
+    <Tag className="h-3 w-3" />
+    {category}
+  </span>
 );
+
+const PostMeta = ({ post }: { post: BlogPost }) => {
+  const parts = [
+    post.published_at ? format(new Date(post.published_at), 'MMM d, yyyy') : null,
+    post.read_time,
+  ].filter(Boolean).join(' · ');
+
+  return (
+    <div className="flex items-center gap-2.5">
+      <div className="w-8 h-8 rounded-full bg-amber-50 border border-amber-100 flex items-center justify-center flex-shrink-0">
+        <User className="h-3.5 w-3.5 text-amber-700" />
+      </div>
+      <div>
+        <p className="text-xs font-semibold text-slate-900 leading-none mb-0.5">{post.author_name}</p>
+        {parts && <p className="text-xs text-slate-500 leading-none">{parts}</p>}
+      </div>
+    </div>
+  );
+};
+
+// ─── Cards ─────────────────────────────────────────────────────────────────────
+
+const FeaturedPostCard = ({ post }: { post: BlogPost }) => (
+  <Reveal>
+    <div className="service-card overflow-hidden">
+      <div className="grid grid-cols-1 md:grid-cols-5 md:min-h-[300px]">
+
+        {/* Thumbnail */}
+        <div className="md:col-span-2 aspect-video md:aspect-auto">
+          <PostThumbnail post={post} />
+        </div>
+
+        {/* Content */}
+        <div className="md:col-span-3 p-7 flex flex-col">
+          <div className="flex items-center gap-2 mb-4 flex-wrap">
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-600 text-white rounded-full text-xs font-semibold">
+              Featured
+            </span>
+            <CategoryPill category={post.category} />
+          </div>
+
+          <h2 className="text-xl md:text-2xl font-bold text-slate-900 mb-3 leading-snug">{post.title}</h2>
+          <p className="text-sm text-slate-500 leading-relaxed flex-grow mb-5">{post.excerpt}</p>
+
+          <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-slate-100">
+            <PostMeta post={post} />
+            <Button asChild size="sm" className="shadow-none gap-1.5 shrink-0">
+              <Link to={`/blog/${post.slug}`}>
+                Read article
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </Reveal>
+);
+
+const BlogPostCard = ({ post, index }: { post: BlogPost; index: number }) => (
+  <Reveal delay={index * 70}>
+    <div className="service-card h-full flex flex-col overflow-hidden">
+
+      <div className="aspect-video flex-shrink-0">
+        <PostThumbnail post={post} />
+      </div>
+
+      <div className="p-6 flex-grow flex flex-col">
+        <div className="mb-3">
+          <CategoryPill category={post.category} />
+        </div>
+
+        <h3 className="font-bold text-slate-900 text-base leading-snug mb-2">{post.title}</h3>
+        <p className="text-sm text-slate-500 leading-relaxed flex-grow mb-5">{post.excerpt}</p>
+
+        <div className="pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
+          <PostMeta post={post} />
+          <Button asChild variant="outline" size="sm" className="gap-1.5 shrink-0">
+            <Link to={`/blog/${post.slug}`}>
+              Read article
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </Button>
+        </div>
+      </div>
+    </div>
+  </Reveal>
+);
+
+// ─── Skeleton ─────────────────────────────────────────────────────────────────
+
+const BlogCardSkeleton = () => (
+  <div className="service-card overflow-hidden">
+    <Skeleton className="aspect-video w-full rounded-none" />
+    <div className="p-6 space-y-3">
+      <Skeleton className="h-5 w-24 rounded-full" />
+      <Skeleton className="h-5 w-3/4" />
+      <Skeleton className="h-4 w-full" />
+      <Skeleton className="h-4 w-5/6" />
+      <div className="flex items-center gap-2 pt-3 border-t border-slate-100">
+        <Skeleton className="h-8 w-8 rounded-full flex-shrink-0" />
+        <Skeleton className="h-3 w-28" />
+      </div>
+    </div>
+  </div>
+);
+
+// ─── Page ─────────────────────────────────────────────────────────────────────
 
 const Blog = () => {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm]         = useState('');
   const [activeCategory, setActiveCategory] = useState('All Categories');
-  
-  // Filter posts based on search term and category
-  const filteredPosts = blogPosts.filter(post => {
-    const matchesSearch = searchTerm === '' || 
+  const [newsletterEmail, setNewsletterEmail]   = useState('');
+  const [newsletterDone, setNewsletterDone]     = useState(false);
+  const [newsletterLoading, setNewsletterLoading] = useState(false);
+
+  async function handleNewsletterSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!newsletterEmail) return;
+    setNewsletterLoading(true);
+    try {
+      const { error } = await supabase
+        .from('newsletter_subscribers')
+        .insert({ email: newsletterEmail.trim(), source: 'blog' });
+      if (error && error.code !== '23505') throw error;
+      setNewsletterDone(true);
+    } catch {
+      toast({ title: "Something went wrong", description: "Please try again.", variant: "destructive" });
+    } finally {
+      setNewsletterLoading(false);
+    }
+  }
+
+  const { data: posts = [], isLoading, error } = useQuery({
+    queryKey: ['blog_posts'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('blog_posts')
+        .select('*')
+        .eq('is_published', true)
+        .order('published_at', { ascending: false });
+      if (error) throw error;
+      return data as BlogPost[];
+    },
+  });
+
+  const filteredPosts = posts.filter(post => {
+    const matchesSearch =
+      searchTerm === '' ||
       post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       post.excerpt.toLowerCase().includes(searchTerm.toLowerCase());
-      
-    const matchesCategory = activeCategory === 'All Categories' || post.category === activeCategory;
-    
+    const matchesCategory =
+      activeCategory === 'All Categories' || post.category === activeCategory;
     return matchesSearch && matchesCategory;
   });
-  
-  // Separate featured and regular posts
-  const featuredPosts = filteredPosts.filter(post => post.featured);
-  const regularPosts = filteredPosts.filter(post => !post.featured);
+
+  const featuredPosts = filteredPosts.filter(p => p.is_featured);
+  const regularPosts  = filteredPosts.filter(p => !p.is_featured);
+  const isFiltering   = searchTerm !== '' || activeCategory !== 'All Categories';
 
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-primary/10 via-primary/5 to-background py-16">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6">CrémeTalent Blog</h1>
-          <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto mb-8">
-            Insights, advice, and trends for creative professionals and businesses in the creative economy.
-          </p>
-          
-          <div className="max-w-2xl mx-auto flex">
-            <div className="relative flex-grow">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+
+      {/* ── Hero ─────────────────────────────────────────────────────────────── */}
+      <section className="relative bg-white overflow-hidden">
+        <div className="pointer-events-none absolute -top-24 -right-24 h-80 w-80 rounded-full bg-amber-100 blur-3xl opacity-50" aria-hidden="true" />
+        <div className="pointer-events-none absolute top-16 -left-16 h-64 w-64 rounded-full bg-primary/10 blur-3xl opacity-60" aria-hidden="true" />
+
+        <div className="relative container mx-auto px-4 py-16 md:py-24 text-center">
+          <Reveal>
+            <span className="eyebrow mb-5 mx-auto">
+              <BookOpen className="h-3.5 w-3.5" />
+              The Journal
+            </span>
+            <h1 className="text-5xl sm:text-6xl md:text-7xl font-semibold mb-6 leading-[1.1] text-slate-900">
+              Insights for Africa's{' '}
+              <em className="not-italic text-primary">creative economy.</em>
+            </h1>
+            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
+              Career advice, industry trends, and stories from the world of African creative talent — written for professionals and the businesses that hire them.
+            </p>
+
+            {/* Search bar */}
+            <div className="relative max-w-lg mx-auto">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
               <Input
+                type="search"
                 placeholder="Search articles..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 py-6"
+                onChange={e => setSearchTerm(e.target.value)}
+                className="pl-11 h-12 rounded-xl border-slate-200 bg-white shadow-sm text-sm"
               />
             </div>
-            <Button className="ml-2">
-              <Search className="mr-2" />
-              Search
-            </Button>
-          </div>
+          </Reveal>
         </div>
       </section>
-      
-      {/* Categories Filter */}
-      <section className="bg-white py-4 border-b sticky top-16 z-10">
-        <div className="container mx-auto px-4">
-          <div className="flex overflow-x-auto pb-2 scrollbar-none">
-            {categories.map(category => (
-              <Button
-                key={category}
-                variant={activeCategory === category ? "default" : "ghost"}
-                size="sm"
-                className="mr-2 whitespace-nowrap"
-                onClick={() => setActiveCategory(category)}
+
+      {/* ── Category filter strip ─────────────────────────────────────────────── */}
+      <div className="sticky top-16 z-40 bg-white/95 backdrop-blur-sm border-b border-slate-100">
+        <div className="container mx-auto px-4 py-3">
+          <div className="flex items-center gap-2 overflow-x-auto scrollbar-none">
+            {CATEGORIES.map(cat => (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                className={`px-3.5 py-1.5 rounded-full text-xs font-medium whitespace-nowrap flex-shrink-0 transition-all duration-150 ${
+                  activeCategory === cat
+                    ? 'bg-amber-600 text-white shadow-sm'
+                    : 'bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-700'
+                }`}
               >
-                {category}
-              </Button>
+                {cat}
+              </button>
             ))}
           </div>
         </div>
-      </section>
-      
-      {/* Featured Posts */}
-      {featuredPosts.length > 0 && (
-        <section className="py-12 bg-white">
+      </div>
+
+      {/* ── Content ──────────────────────────────────────────────────────────── */}
+      {isLoading ? (
+        <section className="py-20 bg-slate-50">
           <div className="container mx-auto px-4">
-            <h2 className="text-2xl font-bold mb-8">Featured Articles</h2>
-            <div className="space-y-8">
-              {featuredPosts.map(post => (
-                <FeaturedPostCard key={post.id} post={post} />
-              ))}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {Array.from({ length: 6 }).map((_, i) => <BlogCardSkeleton key={i} />)}
             </div>
           </div>
         </section>
-      )}
-      
-      {/* Regular Posts Grid */}
-      <section className="py-12 bg-white">
-        <div className="container mx-auto px-4">
-          <h2 className="text-2xl font-bold mb-8">Latest Articles</h2>
-          
-          {regularPosts.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {regularPosts.map(post => (
-                <BlogPostCard key={post.id} post={post} />
-              ))}
+      ) : error ? (
+        <section className="py-20 bg-slate-50">
+          <div className="container mx-auto px-4 text-center max-w-sm">
+            <div className="w-12 h-12 bg-red-50 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-red-100">
+              <AlertCircle className="h-6 w-6 text-red-500" />
             </div>
-          ) : (
-            <div className="text-center py-12">
-              <p className="text-xl font-medium mb-2">No articles found</p>
-              <p className="text-muted-foreground">
-                Try adjusting your search or category filters to find more articles.
-              </p>
-            </div>
-          )}
-        </div>
-      </section>
-      
-      {/* Newsletter Signup */}
-      <section className="py-12 bg-amber-50">
-        <div className="container mx-auto px-4 max-w-4xl">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold mb-4">Subscribe to Our Newsletter</h2>
-            <p className="text-muted-foreground">
-              Get the latest articles, resources, and career opportunities delivered straight to your inbox.
-            </p>
+            <p className="text-base font-semibold text-slate-900 mb-1">Failed to load articles</p>
+            <p className="text-sm text-slate-500">Something went wrong. Please refresh the page to try again.</p>
           </div>
-          
-          <form className="flex flex-col md:flex-row gap-4">
-            <Input 
-              placeholder="Enter your email address" 
-              type="email" 
-              className="md:flex-grow py-6"
-              required
-            />
-            <Button size="lg">Subscribe</Button>
-          </form>
-          
-          <p className="text-xs text-center text-muted-foreground mt-4">
-            By subscribing, you agree to our Privacy Policy and consent to receive updates from CrémeTalent.
-          </p>
+        </section>
+      ) : (
+        <>
+          {/* Featured posts */}
+          {featuredPosts.length > 0 && (
+            <section className="py-20 md:py-28 bg-white">
+              <div className="container mx-auto px-4 max-w-6xl">
+                <Reveal className="mb-10">
+                  <span className="eyebrow mb-4">Featured Articles</span>
+                  <h2 className="text-4xl md:text-5xl font-semibold leading-[1.1]">
+                    Editor's picks.
+                  </h2>
+                </Reveal>
+                <div className="space-y-6">
+                  {featuredPosts.map(post => (
+                    <FeaturedPostCard key={post.id} post={post} />
+                  ))}
+                </div>
+              </div>
+            </section>
+          )}
+
+          {/* Regular posts */}
+          <section className="py-20 md:py-28 bg-slate-50">
+            <div className="container mx-auto px-4 max-w-6xl">
+              <Reveal className="mb-10">
+                <span className="eyebrow mb-4">
+                  {isFiltering ? 'Search Results' : 'Latest Articles'}
+                </span>
+                <h2 className="text-4xl md:text-5xl font-semibold leading-[1.1]">
+                  {isFiltering
+                    ? `${filteredPosts.length} article${filteredPosts.length !== 1 ? 's' : ''} found.`
+                    : 'From the journal.'}
+                </h2>
+              </Reveal>
+
+              {regularPosts.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {regularPosts.map((post, i) => (
+                    <BlogPostCard key={post.id} post={post} index={i} />
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-16 max-w-sm mx-auto">
+                  <div className="w-12 h-12 bg-amber-50 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-amber-100">
+                    <Search className="h-6 w-6 text-amber-600" />
+                  </div>
+                  <p className="text-base font-semibold text-slate-900 mb-1">No articles found</p>
+                  <p className="text-sm text-slate-500 mb-4">
+                    Try adjusting your search or selecting a different category.
+                  </p>
+                  {isFiltering && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => { setSearchTerm(''); setActiveCategory('All Categories'); }}
+                    >
+                      Clear filters
+                    </Button>
+                  )}
+                </div>
+              )}
+            </div>
+          </section>
+        </>
+      )}
+
+      {/* ── Newsletter CTA ────────────────────────────────────────────────────── */}
+      <section className="relative overflow-hidden bg-amber-700 py-20 md:py-24">
+        <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+          <div className="absolute -top-20 -left-20 h-72 w-72 rounded-full bg-amber-600/40 blur-3xl" />
+          <div className="absolute -bottom-16 -right-16 h-64 w-64 rounded-full bg-amber-900/40 blur-3xl" />
+        </div>
+
+        <div className="relative container mx-auto px-4 text-center max-w-xl">
+          <Reveal>
+            <span className="eyebrow mb-5 mx-auto border-white/20 text-amber-100 bg-white/10">
+              <Sparkles className="h-3.5 w-3.5" />
+              Stay in the loop
+            </span>
+            <h2 className="text-4xl md:text-5xl font-semibold text-white mb-4 leading-[1.1]">
+              Get it in your inbox.
+            </h2>
+            <p className="text-lg text-amber-100 mb-8 leading-relaxed">
+              The latest articles, resources, and creative opportunities — delivered straight to you.
+            </p>
+
+            {newsletterDone ? (
+              <div className="bg-white/10 border border-white/20 rounded-2xl px-6 py-5">
+                <p className="text-white font-semibold">You're subscribed!</p>
+                <p className="text-amber-100 text-sm mt-1">We'll be in touch with the best from CrémeTalent.</p>
+              </div>
+            ) : (
+              <form
+                onSubmit={handleNewsletterSubmit}
+                className="flex flex-col sm:flex-row gap-3"
+              >
+                <Input
+                  type="email"
+                  placeholder="Your email address"
+                  value={newsletterEmail}
+                  onChange={e => setNewsletterEmail(e.target.value)}
+                  required
+                  className="flex-grow h-12 bg-white/10 border-white/30 text-white placeholder:text-white/50 focus-visible:ring-white/20"
+                />
+                <Button
+                  type="submit"
+                  size="lg"
+                  disabled={newsletterLoading}
+                  className="bg-white text-amber-800 hover:bg-amber-50 shadow-none font-semibold h-12 shrink-0"
+                >
+                  {newsletterLoading ? "Subscribing…" : "Subscribe"}
+                </Button>
+              </form>
+            )}
+
+            <p className="text-xs text-amber-200/70 mt-4">
+              By subscribing, you agree to our Privacy Policy. Unsubscribe anytime.
+            </p>
+          </Reveal>
         </div>
       </section>
-      
+
       <Footer />
     </div>
   );

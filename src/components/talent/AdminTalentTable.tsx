@@ -32,10 +32,10 @@ import {
 
 interface AdminTalentTableProps {
   talent: TalentData[];
-  onUpdateStatus: (id: number, status: string) => void;
-  onUpdateNotes: (id: number, notes: string) => void;
-  selectedId: number | null;
-  setSelectedId: (id: number | null) => void;
+  onUpdateStatus: (id: string, status: string) => void;
+  onUpdateNotes: (id: string, notes: string) => void;
+  selectedId: string | null;
+  setSelectedId: (id: string | null) => void;
 }
 
 const AdminTalentTable = ({ 
@@ -94,8 +94,8 @@ const AdminTalentTable = ({
                 <TableCell className="font-medium">{talentItem.name}</TableCell>
                 <TableCell>
                   <div className="flex flex-wrap gap-1">
-                    {talentItem.skills.map((skill, i) => (
-                      <span key={i} className="px-1.5 py-0.5 bg-gray-100 rounded text-xs">
+                    {talentItem.skills.map((skill) => (
+                      <span key={skill} className="px-1.5 py-0.5 bg-gray-100 rounded text-xs">
                         {skill}
                       </span>
                     ))}

@@ -1,5 +1,3 @@
-
-import React from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Tabs, TabsContent } from "@/components/ui/tabs";
@@ -13,22 +11,25 @@ const TalentPool = () => {
     searchTerm,
     setSearchTerm,
     filters,
+    isLoading,
     clientRequirements,
     activeTab,
     setActiveTab,
     filteredTalent,
+    matchedTalent,
+    hasRunMatch,
+    talent,
     handleFilterChange,
     handleClientRequirementChange,
     findMatches,
-    exportData
+    exportData,
   } = useTalentPool();
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-slate-50">
       <Navbar />
-      
-      {/* Hero Section with Tabs */}
-      <TalentPoolHero 
+
+      <TalentPoolHero
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         searchTerm={searchTerm}
@@ -37,32 +38,34 @@ const TalentPool = () => {
         handleClientRequirementChange={handleClientRequirementChange}
         findMatches={findMatches}
         exportData={exportData}
-        filteredTalent={filteredTalent}
+        matchedTalent={matchedTalent}
+        hasRunMatch={hasRunMatch}
       />
-      
-      <Tabs value={activeTab} className="w-full">
+
+      <Tabs value={activeTab} className="w-full flex-1">
         <TabsContent value="browse" className="mt-0">
-          <section className="py-12 bg-white">
+          <section className="py-10">
             <div className="container mx-auto px-4">
-              <div className="flex flex-col lg:flex-row gap-8">
-                {/* Filters Sidebar */}
-                <TalentFilterSidebar 
-                  filters={filters} 
-                  handleFilterChange={handleFilterChange} 
+              <div className="flex flex-col lg:flex-row gap-7 items-start">
+                <TalentFilterSidebar
+                  filters={filters}
+                  handleFilterChange={handleFilterChange}
                 />
-                
-                {/* Results Grid */}
-                <TalentResults filteredTalent={filteredTalent} />
+                <TalentResults
+                  filteredTalent={filteredTalent}
+                  isLoading={isLoading}
+                  totalCount={talent.length}
+                />
               </div>
             </div>
           </section>
         </TabsContent>
-        
+
         <TabsContent value="admin">
-          {/* Admin tab content is rendered in the hero section */}
+          {/* Match results rendered inside TalentPoolHero */}
         </TabsContent>
       </Tabs>
-      
+
       <Footer />
     </div>
   );

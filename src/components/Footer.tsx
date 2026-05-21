@@ -1,113 +1,152 @@
-
-import React from 'react';
-import { HandHeart, Phone, Mail, MapPin, Clock, Linkedin, Instagram, X } from 'lucide-react';
+import { Phone, Mail, MapPin, Linkedin, Instagram, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-// Helper function to send notification emails (placeholder)
-export const sendEmail = (to: string, subject: string, body: string) => {
-  // In a real application, this would connect to an email service
-  // For demonstration purposes, we'll just log the email details
-  console.log('Sending email:');
-  console.log(`To: ${to}`);
-  console.log(`Subject: ${subject}`);
-  console.log(`Body: ${body}`);
-  
-  // Return a promise to simulate async behavior
-  return new Promise<void>((resolve) => {
-    setTimeout(() => {
-      console.log('Email sent successfully');
-      resolve();
-    }, 1000);
-  });
-};
+// ─── Data ─────────────────────────────────────────────────────────────────────
+
+const QUICK_LINKS = [
+  { label: 'About Us',           to: '/about' },
+  { label: 'Services',           to: '/services' },
+  { label: 'How It Works',       to: '/how-it-works' },
+  { label: 'Talent Pool',        to: '/talent-pool' },
+  { label: 'Training Resources', to: '/training-resources' },
+  { label: 'Blog',               to: '/blog' },
+  { label: 'Contact',            to: '/contact' },
+];
+
+const SOCIALS = [
+  {
+    label: 'LinkedIn',
+    href: 'https://www.linkedin.com',
+    icon: Linkedin,
+  },
+  {
+    label: 'Instagram',
+    href: 'https://www.instagram.com/cremetalentafrica?igsh=MTFmejR1aXE5b2R0bQ%3D%3D&utm_source=qr',
+    icon: Instagram,
+  },
+  {
+    label: 'X (Twitter)',
+    href: 'https://x.com/cremetalenta?s=21',
+    icon: X,
+  },
+];
+
+// ─── Footer ───────────────────────────────────────────────────────────────────
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
-  
+
   return (
-    <footer className="bg-amber-900 text-white pt-12 pb-6">
-      <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
-          {/* Column 1: Logo and Description */}
+    <footer className="bg-amber-900 text-white">
+      {/* Top accent */}
+      <div className="h-0.5 w-full bg-gradient-to-r from-amber-700 via-amber-400 to-amber-700" />
+
+      <div className="container mx-auto px-4 pt-14 pb-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+
+          {/* ── Brand ─────────────────────────────────────────────────────── */}
           <div>
-            <div className="flex items-center space-x-2 mb-4">
-              <HandHeart className="h-8 w-8" />
-              <h3 className="text-xl font-bold">CrémeTalent</h3>
-            </div>
-            <p className="text-amber-100 mb-4">
+            <Link to="/" aria-label="CrémeTalent — home">
+              <img
+                src="/logo.png"
+                alt="CrémeTalent"
+                className="h-16 w-auto brightness-0 invert mb-5"
+              />
+            </Link>
+            <p className="text-sm text-amber-100 leading-relaxed mb-6">
               Empowering the creative economy by connecting exceptional talent with opportunities that make a difference.
             </p>
-            <div className="flex space-x-4">
-              <a href="https://www.linkedin.com" className="text-white hover:text-amber-300 transition-colors">
-                <Linkedin className="h-5 w-5" />
-              </a>
-              <a href="https://www.instagram.com/cremetalentafrica?igsh=MTFmejR1aXE5b2R0bQ%3D%3D&utm_source=qr" className="text-white hover:text-amber-300 transition-colors">
-                <Instagram className="h-5 w-5" />
-              </a>
-              <a href="https://x.com/cremetalenta?s=21" className="text-white hover:text-amber-300 transition-colors">
-                <X className="h-5 w-5" />
-              </a>
+            <div className="flex items-center gap-2.5">
+              {SOCIALS.map(({ label, href, icon: Icon }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="w-9 h-9 rounded-full bg-amber-800 border border-amber-700 flex items-center justify-center text-amber-200 hover:text-white hover:bg-amber-600 hover:border-amber-500 transition-all duration-200"
+                >
+                  <Icon className="h-4 w-4" />
+                </a>
+              ))}
             </div>
           </div>
-          
-          {/* Column 2: Quick Links */}
+
+          {/* ── Quick Links ───────────────────────────────────────────────── */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
-            <ul className="space-y-2">
-              <li><Link to="/" className="text-amber-100 hover:text-white transition-colors">Home</Link></li>
-              <li><Link to="/about" className="text-amber-100 hover:text-white transition-colors">About Us</Link></li>
-              <li><Link to="/services" className="text-amber-100 hover:text-white transition-colors">Services</Link></li>
-              <li><Link to="/how-it-works" className="text-amber-100 hover:text-white transition-colors">How It Works</Link></li>
-              <li><Link to="/talent-pool" className="text-amber-100 hover:text-white transition-colors">Talent Pool</Link></li>
-              <li><Link to="/admin/login" className="text-amber-100 hover:text-white transition-colors">Admin Portal</Link></li>
-            </ul>
-          </div>
-          
-          {/* Column 3: Hours */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Hours</h3>
-            <ul className="space-y-2">
-              <li className="flex items-start space-x-2">
-                <Clock className="h-5 w-5 mt-0.5 flex-shrink-0" />
-                <div>
-                  <p className="font-medium">Monday - Friday</p>
-                  <p className="text-amber-100">9:00 AM - 5:00 PM</p>
-                </div>
-              </li>
-              <li className="flex items-start space-x-2">
-                <Clock className="h-5 w-5 mt-0.5 flex-shrink-0" />
-                <div>
-                  <p className="font-medium">Saturday & Sunday</p>
-                  <p className="text-amber-100">Closed</p>
-                </div>
-              </li>
-            </ul>
-          </div>
-          
-          {/* Column 4: Contact */}
-          <div id="contact">
-            <h3 className="text-lg font-semibold mb-4">Contact</h3>
+            <h3 className="text-xs font-semibold text-amber-400 uppercase tracking-widest mb-5">
+              Quick Links
+            </h3>
             <ul className="space-y-3">
-              <li className="flex items-start space-x-2">
-                <MapPin className="h-5 w-5 mt-0.5 flex-shrink-0" />
-                <p className="text-amber-100">Federal Capital City, Abuja, Nigeria</p>
+              {QUICK_LINKS.map(({ label, to }) => (
+                <li key={to}>
+                  <Link
+                    to={to}
+                    className="text-sm text-amber-100 hover:text-white transition-colors duration-150"
+                  >
+                    {label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* ── Hours ─────────────────────────────────────────────────────── */}
+          <div>
+            <h3 className="text-xs font-semibold text-amber-400 uppercase tracking-widest mb-5">
+              Hours
+            </h3>
+            <ul className="space-y-4">
+              <li>
+                <p className="text-sm font-medium text-white mb-0.5">Monday – Friday</p>
+                <p className="text-sm text-amber-100">9:00 AM – 5:00 PM</p>
               </li>
-              <li className="flex items-start space-x-2">
-                <Phone className="h-5 w-5 mt-0.5 flex-shrink-0" />
-                <p className="text-amber-100">+234 8127570333</p>
+              <li>
+                <p className="text-sm font-medium text-white mb-0.5">Saturday &amp; Sunday</p>
+                <p className="text-sm text-amber-100">Closed</p>
               </li>
-              <li className="flex items-start space-x-2">
-                <Mail className="h-5 w-5 mt-0.5 flex-shrink-0" />
-                <p className="text-amber-100">Cremetalentafrica@gmail.com</p>
+            </ul>
+          </div>
+
+          {/* ── Contact ───────────────────────────────────────────────────── */}
+          <div id="contact">
+            <h3 className="text-xs font-semibold text-amber-400 uppercase tracking-widest mb-5">
+              Contact
+            </h3>
+            <ul className="space-y-4">
+              <li className="flex items-start gap-3">
+                <MapPin className="h-4 w-4 text-amber-400 flex-shrink-0 mt-0.5" />
+                <p className="text-sm text-amber-100 leading-snug">
+                  Federal Capital City, Abuja, Nigeria
+                </p>
+              </li>
+              <li className="flex items-center gap-3">
+                <Phone className="h-4 w-4 text-amber-400 flex-shrink-0" />
+                <a
+                  href="tel:+2348127570333"
+                  className="text-sm text-amber-100 hover:text-white transition-colors"
+                >
+                  +234 8127570333
+                </a>
+              </li>
+              <li className="flex items-start gap-3">
+                <Mail className="h-4 w-4 text-amber-400 flex-shrink-0 mt-0.5" />
+                <a
+                  href="mailto:Cremetalentafrica@gmail.com"
+                  className="text-sm text-amber-100 hover:text-white transition-colors break-all"
+                >
+                  Cremetalentafrica@gmail.com
+                </a>
               </li>
             </ul>
           </div>
         </div>
-        
-        {/* Copyright */}
-        <div className="border-t border-amber-700 pt-6 mt-6 text-center text-amber-300 text-sm">
-          <p>© {currentYear} CrémeTalent. All rights reserved.</p>
-          <p className="mt-2 text-xs">Admin access: <Link to="/admin/login" className="underline">Login to Admin Portal</Link></p>
+
+        {/* ── Bottom bar ────────────────────────────────────────────────────── */}
+        <div className="border-t border-amber-800 pt-6 text-center">
+          <p className="text-xs text-amber-300">
+            © {currentYear} CrémeTalent. All rights reserved.
+          </p>
         </div>
       </div>
     </footer>

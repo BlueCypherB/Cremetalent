@@ -1,5 +1,3 @@
-
-import React from 'react';
 import { TalentData } from '@/types/talent';
 import {
   Dialog,
@@ -16,9 +14,7 @@ import {
   MapPin,
   Clock,
   Star,
-  Mail,
   ExternalLink,
-  User
 } from 'lucide-react';
 
 interface TalentProfileModalProps {
@@ -92,8 +88,8 @@ const TalentProfileModal = ({ talent, isOpen, onClose }: TalentProfileModalProps
           <div className="border-b pb-6">
             <h3 className="text-lg font-semibold mb-3">Skills</h3>
             <div className="flex flex-wrap gap-2">
-              {talent.skills.map((skill, index) => (
-                <Badge key={index} variant="outline" className="bg-gray-100">
+              {talent.skills.map((skill) => (
+                <Badge key={skill} variant="outline" className="bg-gray-100">
                   {skill}
                 </Badge>
               ))}
@@ -104,8 +100,8 @@ const TalentProfileModal = ({ talent, isOpen, onClose }: TalentProfileModalProps
           <div className="border-b pb-6">
             <h3 className="text-lg font-semibold mb-3">Portfolio</h3>
             <ul className="space-y-2">
-              {talent.portfolio.map((project, index) => (
-                <li key={index} className="flex items-center">
+              {talent.portfolio.map((project) => (
+                <li key={project} className="flex items-center">
                   <ExternalLink className="h-4 w-4 mr-2 text-primary" />
                   <a 
                     href={project.startsWith('http') ? project : `https://${project}`} 
@@ -120,18 +116,12 @@ const TalentProfileModal = ({ talent, isOpen, onClose }: TalentProfileModalProps
             </ul>
           </div>
           
-          {/* Contact */}
-          <div>
-            <h3 className="text-lg font-semibold mb-3">Contact Information</h3>
-            <div className="flex items-center">
-              <Mail className="h-4 w-4 mr-2 text-primary" />
-              <a 
-                href={`mailto:${talent.email}`} 
-                className="text-primary hover:underline"
-              >
-                {talent.email}
-              </a>
-            </div>
+          {/* CTA */}
+          <div className="rounded-xl bg-primary/5 border border-primary/15 p-5">
+            <p className="text-sm font-medium mb-3">Interested in working with {talent.name.split(' ')[0]}?</p>
+            <Button asChild size="sm">
+              <a href="/client-intake-form">Submit a project inquiry</a>
+            </Button>
           </div>
         </div>
         

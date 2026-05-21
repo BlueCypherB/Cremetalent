@@ -1,6 +1,5 @@
-
 export interface TalentData {
-  id: number;
+  id: string;
   name: string;
   photo: string | null;
   location: string;
@@ -15,4 +14,5 @@ export interface TalentData {
   notes?: string;
   matchScore?: number;
   lastContact?: string;
+  userId?: string | null;
 }

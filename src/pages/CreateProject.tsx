@@ -1,5 +1,3 @@
-
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -13,12 +11,18 @@ import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription, For
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
+import { supabase } from '@/lib/supabase';
 
 const formSchema = z.object({
   title: z.string().min(5, {
     message: "Title must be at least 5 characters.",
   }).max(100, {
     message: "Title must not exceed 100 characters."
+  }),
+  creatorName: z.string().min(2, {
+    message: "Name must be at least 2 characters.",
+  }).max(80, {
+    message: "Name must not exceed 80 characters.",
   }),
   category: z.string({
     required_error: "Please select a category.",
@@ -66,6 +70,7 @@ const CreateProject = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
+      creatorName: "",
       category: "",
       shortDescription: "",
       fullDescription: "",
@@ -74,15 +79,27 @@ const CreateProject = () => {
     },
   });
   
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // In a real application, this would connect to a backend API
-    console.log(values);
-    toast.success("Project created successfully! In a real app, this would be saved to a database.");
-    
-    // Simulate a successful creation and redirect
-    setTimeout(() => {
-      navigate("/projects");
-    }, 1500);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    const slug = values.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    const { error } = await supabase.from('projects').insert({
+      title: values.title,
+      category: values.category,
+      short_description: values.shortDescription,
+      full_description: values.fullDescription,
+      goal_amount: parseFloat(values.goalAmount),
+      duration_days: parseInt(values.duration),
+      creator_name: values.creatorName,
+      slug,
+      is_published: false,
+    });
+
+    if (error) {
+      toast.error(`Failed to create project: ${error.message}`);
+      return;
+    }
+
+    toast.success("Project submitted for review! It will appear once approved.");
+    setTimeout(() => navigate("/projects"), 1500);
   }
   
   return (
@@ -114,6 +131,23 @@ const CreateProject = () => {
                   )}
                 />
                 
+                <FormField
+                  control={form.control}
+                  name="creatorName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Your name or organisation</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g. Jane Doe or Acme Foundation" {...field} />
+                      </FormControl>
+                      <FormDescription>
+                        This appears on the project card as the creator.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
                 <FormField
                   control={form.control}
                   name="category"
@@ -231,11 +265,6 @@ const CreateProject = () => {
                 </div>
                 
                 <div className="pt-4">
-                  <p className="text-sm text-muted-foreground mb-6">
-                    In a complete application, you would be able to upload project images, add team members, 
-                    and configure reward tiers for donors here.
-                  </p>
-                  
                   <div className="flex justify-end space-x-4">
                     <Button
                       type="button"

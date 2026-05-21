@@ -1,116 +1,197 @@
-
-import React from 'react';
 import { Button } from "@/components/ui/button";
-import { Filter } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { SlidersHorizontal, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { TALENT_CATEGORIES } from '@/lib/taxonomy';
 
-interface TalentFilterSidebarProps {
-  filters: {
-    category: string;
-    experience: string;
-    location: string;
-    availability: string;
-  };
-  handleFilterChange: (filterName: keyof TalentFilterSidebarProps['filters'], value: string) => void;
+interface Filters {
+  category: string;
+  experience: string;
+  location: string;
+  availability: string;
 }
 
+interface TalentFilterSidebarProps {
+  filters: Filters;
+  handleFilterChange: (filterName: keyof Filters, value: string) => void;
+}
+
+const FilterField = ({
+  label,
+  id,
+  value,
+  placeholder,
+  options,
+  onChange,
+}: {
+  label: string;
+  id: string;
+  value: string;
+  placeholder: string;
+  options: { value: string; label: string }[];
+  onChange: (value: string) => void;
+}) => (
+  <div className="space-y-1.5">
+    <label htmlFor={id} className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+      {label}
+    </label>
+    <Select value={value || '__all__'} onValueChange={v => onChange(v === '__all__' ? '' : v)}>
+      <SelectTrigger
+        id={id}
+        className="h-9 text-sm border-slate-200 bg-white focus:ring-amber-400/30 focus:border-amber-400"
+      >
+        <SelectValue placeholder={placeholder} />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="__all__" className="text-sm text-slate-500">{placeholder}</SelectItem>
+        {options.map(o => (
+          <SelectItem key={o.value} value={o.value} className="text-sm">{o.label}</SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  </div>
+);
+
 const TalentFilterSidebar = ({ filters, handleFilterChange }: TalentFilterSidebarProps) => {
+  const activeCount = Object.values(filters).filter(Boolean).length;
+
+  const clearAll = () => {
+    handleFilterChange('category', '');
+    handleFilterChange('experience', '');
+    handleFilterChange('location', '');
+    handleFilterChange('availability', '');
+  };
+
+  // Active filter chips
+  const activeFilters = [
+    filters.category && { key: 'category' as const, label: filters.category },
+    filters.experience && { key: 'experience' as const, label: filters.experience },
+    filters.location && { key: 'location' as const, label: filters.location },
+    filters.availability && { key: 'availability' as const, label: filters.availability },
+  ].filter(Boolean) as { key: keyof Filters; label: string }[];
+
   return (
-    <div className="lg:w-1/4">
-      <div className="bg-amber-50 p-6 rounded-lg">
-        <div className="flex items-center mb-6">
-          <Filter className="mr-2 text-amber-600" />
-          <h2 className="text-xl font-semibold">Filter Results</h2>
+    <div className="lg:w-72 flex-shrink-0 space-y-4">
+      {/* Filter panel */}
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <SlidersHorizontal className="h-4 w-4 text-slate-500" />
+            <span className="text-sm font-semibold text-slate-800">Filters</span>
+            {activeCount > 0 && (
+              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700">
+                {activeCount}
+              </span>
+            )}
+          </div>
+          {activeCount > 0 && (
+            <button
+              onClick={clearAll}
+              className="text-xs text-slate-400 hover:text-rose-500 transition-colors"
+            >
+              Clear all
+            </button>
+          )}
         </div>
-        
-        <div className="space-y-6">
-          {/* Category Filter */}
-          <div>
-            <h3 className="font-medium mb-3">Skill Category</h3>
-            <select 
-              className="w-full p-2 border rounded-md"
-              value={filters.category}
-              onChange={(e) => handleFilterChange('category', e.target.value)}
-            >
-              <option value="">All Categories</option>
-              <option value="Brand Strategy">Brand Strategy</option>
-              <option value="Copywriting">Copywriting</option>
-              <option value="Graphic Design">Graphic Design</option>
-              <option value="Photography">Photography</option>
-              <option value="Videography">Videography</option>
-              <option value="Social Media Management">Social Media Management</option>
-              <option value="UI/UX Design">UI/UX Design</option>
-            </select>
-          </div>
-          
-          {/* Experience Level Filter */}
-          <div>
-            <h3 className="font-medium mb-3">Experience Level</h3>
-            <select 
-              className="w-full p-2 border rounded-md"
-              value={filters.experience}
-              onChange={(e) => handleFilterChange('experience', e.target.value)}
-            >
-              <option value="">All Levels</option>
-              <option value="Beginner">Beginner</option>
-              <option value="Intermediate">Intermediate</option>
-              <option value="Advanced">Advanced</option>
-            </select>
-          </div>
-          
-          {/* Location Filter */}
-          <div>
-            <h3 className="font-medium mb-3">Location</h3>
-            <select 
-              className="w-full p-2 border rounded-md"
-              value={filters.location}
-              onChange={(e) => handleFilterChange('location', e.target.value)}
-            >
-              <option value="">All Locations</option>
-              <option value="New York">New York</option>
-              <option value="Remote">Remote</option>
-              <option value="London">London</option>
-              <option value="San Francisco">San Francisco</option>
-            </select>
-          </div>
-          
-          {/* Availability Filter */}
-          <div>
-            <h3 className="font-medium mb-3">Availability</h3>
-            <select 
-              className="w-full p-2 border rounded-md"
-              value={filters.availability}
-              onChange={(e) => handleFilterChange('availability', e.target.value)}
-            >
-              <option value="">All Types</option>
-              <option value="Immediate">Immediate</option>
-              <option value="Two weeks">Two weeks</option>
-              <option value="One month">One month</option>
-            </select>
-          </div>
-          
-          <Button 
-            variant="outline" 
-            className="w-full"
-            onClick={() => {
-              handleFilterChange('category', '');
-              handleFilterChange('experience', '');
-              handleFilterChange('location', '');
-              handleFilterChange('availability', '');
-            }}
-          >
-            Clear Filters
-          </Button>
+
+        <div className="p-5 space-y-5">
+          <FilterField
+            label="Specialization"
+            id="filter-category"
+            value={filters.category}
+            placeholder="All categories"
+            onChange={v => handleFilterChange('category', v)}
+            options={TALENT_CATEGORIES
+              .filter(c => c.value !== 'Other')
+              .map(c => ({ value: c.value, label: c.label }))
+            }
+          />
+          <FilterField
+            label="Experience Level"
+            id="filter-experience"
+            value={filters.experience}
+            placeholder="All levels"
+            onChange={v => handleFilterChange('experience', v)}
+            options={[
+              { value: 'Advanced',     label: 'Advanced (5+ years)' },
+              { value: 'Intermediate', label: 'Intermediate (2–4 years)' },
+              { value: 'Beginner',     label: 'Beginner (0–1 years)' },
+            ]}
+          />
+          <FilterField
+            label="Location"
+            id="filter-location"
+            value={filters.location}
+            placeholder="All countries"
+            onChange={v => handleFilterChange('location', v)}
+            options={[
+              { value: 'Nigeria',      label: 'Nigeria' },
+              { value: 'Ghana',        label: 'Ghana' },
+              { value: 'Kenya',        label: 'Kenya' },
+              { value: 'South Africa', label: 'South Africa' },
+              { value: 'Egypt',        label: 'Egypt' },
+              { value: 'Morocco',      label: 'Morocco' },
+              { value: 'Ethiopia',     label: 'Ethiopia' },
+              { value: 'Tanzania',     label: 'Tanzania' },
+              { value: 'Uganda',       label: 'Uganda' },
+              { value: "Côte d'Ivoire",label: "Côte d'Ivoire" },
+              { value: 'Senegal',      label: 'Senegal' },
+              { value: 'Rwanda',       label: 'Rwanda' },
+              { value: 'Remote',       label: 'Remote' },
+            ]}
+          />
+          <FilterField
+            label="Availability"
+            id="filter-availability"
+            value={filters.availability}
+            placeholder="Any availability"
+            onChange={v => handleFilterChange('availability', v)}
+            options={[
+              { value: 'Immediate',   label: 'Immediate' },
+              { value: 'Two weeks',   label: '2 weeks notice' },
+              { value: 'One month',   label: '1 month notice' },
+            ]}
+          />
         </div>
+
+        {/* Active filter chips */}
+        {activeFilters.length > 0 && (
+          <div className="px-5 pb-5 flex flex-wrap gap-1.5">
+            {activeFilters.map(({ key, label }) => (
+              <button
+                key={key}
+                onClick={() => handleFilterChange(key, '')}
+                className="inline-flex items-center gap-1 text-[11px] font-medium px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 transition-colors"
+              >
+                {label}
+                <X className="h-2.5 w-2.5" />
+              </button>
+            ))}
+          </div>
+        )}
       </div>
-      
-      <div className="mt-8 bg-primary/10 p-6 rounded-lg">
-        <h3 className="font-semibold text-lg mb-4">Join Our Talent Pool</h3>
-        <p className="text-muted-foreground mb-4">
-          Are you a creative professional looking for new opportunities? Join our exclusive talent network.
+
+      {/* CTA card */}
+      <div className="bg-amber-700 rounded-2xl p-5 text-white">
+        <p className="text-xs text-amber-200 font-semibold uppercase tracking-wide mb-2">Are you a creative?</p>
+        <h3 className="font-bold text-base leading-snug mb-2">
+          Join the CrémeTalent network
+        </h3>
+        <p className="text-xs text-amber-100 leading-relaxed mb-4">
+          Get matched with top brands and grow your creative career.
         </p>
-        <Button asChild>
-          <Link to="/join-talent-pool">Apply Now</Link>
+        <Button
+          asChild
+          size="sm"
+          className="bg-white text-amber-800 hover:bg-amber-50 shadow-none h-8 px-4 text-xs font-semibold w-full"
+        >
+          <Link to="/join-talent-pool">Apply Now →</Link>
         </Button>
       </div>
     </div>

@@ -1,142 +1,143 @@
-import React, { useEffect, useState } from 'react';
-import { Card, CardContent } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { loadTalentData } from '@/services/talentService';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/lib/supabase';
+import type { TalentApplication } from '@/lib/database.types';
+import { Star, Sparkles, ArrowRight } from 'lucide-react';
 
-const SPOTLIGHT_REFRESH_INTERVAL = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
+const AVATAR_PALETTES = [
+  { bg: 'bg-amber-200',   text: 'text-amber-900' },
+  { bg: 'bg-violet-200',  text: 'text-violet-900' },
+  { bg: 'bg-sky-200',     text: 'text-sky-900' },
+  { bg: 'bg-emerald-200', text: 'text-emerald-900' },
+  { bg: 'bg-rose-200',    text: 'text-rose-900' },
+];
+
+const avatarPalette = (name: string) =>
+  AVATAR_PALETTES[name.charCodeAt(0) % AVATAR_PALETTES.length];
 
 const TalentSpotlight = () => {
-  const [spotlightTalent, setSpotlightTalent] = useState<any | null>(null);
+  const { data: spotlight } = useQuery({
+    queryKey: ['talent_spotlight'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('talent_applications')
+        .select('id, first_name, last_name, specialization, skills, bio, profile_photo_url')
+        .eq('status', 'approved')
+        .order('reviewed_at', { ascending: false })
+        .limit(20);
 
-  useEffect(() => {
-    const selectFeaturedTalent = () => {
-      // Load approved talent from the talent pool
-      const { approvedTalent } = loadTalentData();
-      
-      if (approvedTalent.length === 0) {
-        // No approved talent available, use the sample data
-        console.log("No approved talent available for spotlight");
-        return null;
-      }
-      
-      // If only one talent is available, select that one
-      if (approvedTalent.length === 1) {
-        console.log("Only one talent available, selecting them for spotlight");
-        return {
-          id: approvedTalent[0].id,
-          name: approvedTalent[0].name,
-          avatar: approvedTalent[0].photo || "",
-          role: approvedTalent[0].category,
-          skills: approvedTalent[0].skills,
-          bio: approvedTalent[0].bio,
-          rating: 4.9 // Default rating since we don't have real ratings yet
-        };
-      }
-      
-      // If multiple talents are available, select one randomly based on the current week
-      // This ensures the selection stays the same for a week
-      const currentDate = new Date();
-      const startOfYear = new Date(currentDate.getFullYear(), 0, 1);
-      const weekNumber = Math.floor((currentDate.getTime() - startOfYear.getTime()) / (7 * 24 * 60 * 60 * 1000));
-      
-      // Use the week number to get a consistent index for the week
-      const selectedIndex = weekNumber % approvedTalent.length;
-      const selected = approvedTalent[selectedIndex];
-      
-      console.log(`Selected talent for spotlight: ${selected.name} (Week ${weekNumber})`);
-      
+      if (error || !data || data.length === 0) return null;
+
+      const weekNumber = Math.floor(Date.now() / (7 * 24 * 60 * 60 * 1000));
+      const selected = data[weekNumber % data.length] as Pick<
+        TalentApplication,
+        'id' | 'first_name' | 'last_name' | 'specialization' | 'skills' | 'bio' | 'profile_photo_url'
+      >;
+
       return {
         id: selected.id,
-        name: selected.name,
-        avatar: selected.photo || "",
-        role: selected.category,
+        name: `${selected.first_name} ${selected.last_name}`,
+        role: selected.specialization,
         skills: selected.skills,
         bio: selected.bio,
-        rating: 4.9 // Default rating since we don't have real ratings yet
+        photoUrl: selected.profile_photo_url ?? null,
       };
-    };
-    
-    // Check localStorage for an existing spotlight talent and its timestamp
-    const savedSpotlight = localStorage.getItem('spotlightTalent');
-    const savedTimestamp = localStorage.getItem('spotlightTimestamp');
-    const currentTime = new Date().getTime();
-    
-    if (savedSpotlight && savedTimestamp && (currentTime - Number(savedTimestamp)) < SPOTLIGHT_REFRESH_INTERVAL) {
-      // If we have a saved spotlight talent that's less than a week old, use it
-      setSpotlightTalent(JSON.parse(savedSpotlight));
-      console.log("Using saved spotlight talent from localStorage");
-    } else {
-      // Otherwise, select a new spotlight talent
-      const selected = selectFeaturedTalent();
-      
-      if (selected) {
-        setSpotlightTalent(selected);
-        // Save to localStorage with current timestamp
-        localStorage.setItem('spotlightTalent', JSON.stringify(selected));
-        localStorage.setItem('spotlightTimestamp', currentTime.toString());
-        console.log("Selected new spotlight talent and saved to localStorage");
-      }
-    }
-  }, []);
+    },
+    staleTime: 60 * 60 * 1000,
+  });
 
-  if (!spotlightTalent) return null;
+  if (!spotlight) return null;
+
+  const palette = avatarPalette(spotlight.name);
+  const initials = spotlight.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
 
   return (
-    <div className="bg-amber-50 py-12">
+    <section className="py-16 bg-white border-y border-slate-100">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold">Talent Spotlight</h2>
-          <p className="text-muted-foreground mt-2">Featuring one of our exceptional creative professionals</p>
+        {/* Section header */}
+        <div className="flex items-center justify-between mb-8 max-w-3xl mx-auto">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <Sparkles className="h-4 w-4 text-amber-500" />
+              <span className="text-xs font-semibold text-amber-600 uppercase tracking-wide">Talent Spotlight</span>
+            </div>
+            <h2 className="text-2xl font-bold text-slate-900">Featured creative this week</h2>
+          </div>
+          <div className="hidden sm:flex items-center gap-1 text-[10px] font-semibold text-slate-400 bg-slate-100 border border-slate-200 px-3 py-1.5 rounded-full">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+            Updated weekly
+          </div>
         </div>
-        
-        <Card className="max-w-2xl mx-auto border-amber-200 shadow-md">
-          <CardContent className="p-8">
-            <div className="flex flex-col md:flex-row gap-6">
-              <div className="flex-shrink-0 flex justify-center">
-                <Avatar className="h-32 w-32 border-4 border-amber-100">
-                  <AvatarImage src={spotlightTalent.avatar} alt={spotlightTalent.name} />
-                  <AvatarFallback className="text-3xl bg-amber-200">
-                    {spotlightTalent.name.split(' ').map((n: string) => n[0]).join('')}
-                  </AvatarFallback>
-                </Avatar>
+
+        {/* Spotlight card */}
+        <div className="max-w-3xl mx-auto">
+          <div className="service-card p-0 overflow-hidden">
+            <div className="grid grid-cols-1 md:grid-cols-[200px_1fr]">
+              {/* Left accent panel */}
+              <div className="bg-gradient-to-br from-amber-600 to-amber-800 p-8 flex flex-col items-center justify-center gap-4">
+                <div className={`h-20 w-20 rounded-full overflow-hidden flex items-center justify-center text-2xl font-bold ring-4 ring-white/20 ${palette.bg} ${palette.text}`}>
+                  {spotlight.photoUrl ? (
+                    <img src={spotlight.photoUrl} alt={spotlight.name} className="h-full w-full object-cover" />
+                  ) : initials}
+                </div>
+                <div className="text-center">
+                  <p className="text-white font-semibold text-sm leading-tight">{spotlight.name}</p>
+                  <p className="text-amber-200 text-xs mt-0.5">{spotlight.role}</p>
+                </div>
+                <div className="flex items-center gap-1 bg-white/15 rounded-full px-3 py-1">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="h-3 w-3 fill-amber-300 text-amber-300" />
+                  ))}
+                </div>
               </div>
-              <div className="flex-1">
-                <h3 className="text-2xl font-bold">{spotlightTalent.name}</h3>
-                <p className="text-amber-700 font-medium mb-2">{spotlightTalent.role}</p>
-                
-                <div className="flex items-center mb-3">
-                  <div className="flex items-center text-amber-500 mr-2">
-                    <Star className="h-4 w-4 fill-amber-500" />
-                    <span className="ml-1 text-sm font-medium">{spotlightTalent.rating}</span>
+
+              {/* Right content */}
+              <div className="p-7 flex flex-col justify-between">
+                <div>
+                  <p className="text-sm text-slate-600 leading-relaxed line-clamp-4 mb-5">
+                    {spotlight.bio}
+                  </p>
+
+                  <div className="mb-6">
+                    <p className="text-[10px] text-slate-400 uppercase font-semibold tracking-wide mb-2">Core skills</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {spotlight.skills.slice(0, 6).map(skill => (
+                        <Badge
+                          key={skill}
+                          variant="outline"
+                          className="text-[11px] bg-amber-50 text-amber-700 border-amber-200 font-medium"
+                        >
+                          {skill}
+                        </Badge>
+                      ))}
+                      {spotlight.skills.length > 6 && (
+                        <Badge variant="outline" className="text-[11px] text-slate-400 border-slate-200">
+                          +{spotlight.skills.length - 6} more
+                        </Badge>
+                      )}
+                    </div>
                   </div>
                 </div>
-                
-                <p className="text-gray-600 mb-4">{spotlightTalent.bio}</p>
-                
-                <div className="mb-4">
-                  <p className="text-sm font-semibold text-gray-500 mb-2">Skills:</p>
-                  <div className="flex flex-wrap gap-2">
-                    {spotlightTalent.skills.map((skill: string, index: number) => (
-                      <Badge key={index} variant="outline" className="bg-amber-50">{skill}</Badge>
-                    ))}
-                  </div>
-                </div>
-                
-                <div className="mt-6">
-                  <Link to="/talent-pool">
-                    <Button variant="default">View More Talent</Button>
-                  </Link>
+
+                <div className="flex items-center gap-3">
+                  <Button asChild size="sm" className="bg-slate-900 hover:bg-amber-700 text-white shadow-none gap-1.5 transition-colors">
+                    <Link to={`/talent/${spotlight.id}`}>
+                      View Profile
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </Link>
+                  </Button>
+                  <Button asChild variant="ghost" size="sm" className="text-slate-500 hover:text-slate-800 text-xs">
+                    <Link to="/talent-pool">Browse all talent</Link>
+                  </Button>
                 </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
-    </div>
+    </section>
   );
 };
 

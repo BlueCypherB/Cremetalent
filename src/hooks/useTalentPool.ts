@@ -1,28 +1,8 @@
-
-import { useState, useEffect } from 'react';
-import { TalentData } from '@/types/talent';
-import { toast } from "@/components/ui/use-toast";
-
-// Initial talent data
-const initialTalent: TalentData[] = [
-  {
-    id: 1,
-    name: "Pamela Williams",
-    photo: null,
-    location: "New York, NY",
-    category: "Brand Strategy",
-    experience: "Advanced",
-    availability: "Immediate",
-    bio: "Strategic brand professional with 6+ years of experience in developing brand identities and compelling copy.",
-    skills: ["Brand Strategy", "Copywriting"],
-    portfolio: ["www.behance.net/pamela"],
-    email: "pam@email.com",
-    status: "Active",
-    notes: "",
-    matchScore: 0,
-    lastContact: "2025-05-01"
-  }
-];
+import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/lib/supabase';
+import { applicationToTalentData } from '@/services/talentService';
+import type { TalentApplication } from '@/lib/database.types';
 
 export const useTalentPool = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -32,7 +12,6 @@ export const useTalentPool = () => {
     location: '',
     availability: ''
   });
-  const [talent, setTalent] = useState(initialTalent);
   const [clientRequirements, setClientRequirements] = useState({
     position: '',
     experienceLevel: '',
@@ -41,156 +20,105 @@ export const useTalentPool = () => {
     skills: ''
   });
   const [activeTab, setActiveTab] = useState('browse');
-  const [selectedTalentId, setSelectedTalentId] = useState<number | null>(null);
-  
-  // Load talent data from localStorage when component mounts
-  useEffect(() => {
-    try {
-      const savedTalent = localStorage.getItem('talentApplications');
-      if (savedTalent) {
-        // Parse the saved applications
-        const applications = JSON.parse(savedTalent);
-        
-        // Map the application data to our TalentData format
-        const formattedApplications = applications.map((app: any, index: number) => ({
-          id: initialTalent.length + index + 1,
-          name: `${app.firstName} ${app.lastName}`,
-          photo: null,
-          location: `${app.city}, ${app.country}`,
-          category: app.specialization,
-          experience: app.experienceLevel,
-          availability: app.availability,
-          bio: app.bio,
-          skills: app.skills.split(',').map((skill: string) => skill.trim()),
-          portfolio: [app.portfolioUrl],
-          email: app.email,
-          status: "Active",
-          notes: "",
-          matchScore: 0,
-          lastContact: new Date().toISOString().split('T')[0]
-        }));
-        
-        // Combine initial talent with new applications
-        setTalent([...initialTalent, ...formattedApplications]);
-        
-        // Show a success message if new talent was added
-        if (formattedApplications.length > 0) {
-          toast({
-            title: "Talent Pool Updated",
-            description: `${formattedApplications.length} approved talent profile(s) loaded.`,
-          });
-        }
-      }
-    } catch (error) {
-      console.error("Error loading talent applications:", error);
+  const [selectedTalentId, setSelectedTalentId] = useState<string | null>(null);
+  const [matchScores, setMatchScores] = useState<Record<string, number>>({});
+  const [hasRunMatch, setHasRunMatch] = useState(false);
+
+  const { data: applications = [], isLoading } = useQuery({
+    queryKey: ['talent_applications', 'approved'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('talent_applications')
+        .select('*')
+        .eq('status', 'approved')
+        .order('reviewed_at', { ascending: false });
+      if (error) throw error;
+      return data as TalentApplication[];
     }
-  }, []);
-  
-  const filteredTalent = talent.filter(talentItem => {
-    // Search term filter
-    const searchMatch = searchTerm === '' || 
-      talentItem.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      talentItem.bio.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      talentItem.skills.some(skill => skill.toLowerCase().includes(searchTerm.toLowerCase()));
-    
-    // Category filter
-    const categoryMatch = filters.category === '' || talentItem.category === filters.category;
-    
-    // Experience filter
-    const experienceMatch = filters.experience === '' || talentItem.experience === filters.experience;
-    
-    // Location filter
-    const locationMatch = filters.location === '' || talentItem.location.includes(filters.location);
-    
-    // Availability filter
-    const availabilityMatch = filters.availability === '' || talentItem.availability === filters.availability;
-    
+  });
+
+  const talent = applications.map(app => ({
+    ...applicationToTalentData(app),
+    matchScore: matchScores[app.id] ?? 0,
+  }));
+
+  const filteredTalent = talent.filter(item => {
+    const searchMatch =
+      searchTerm === '' ||
+      item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.bio.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.skills.some(skill => skill.toLowerCase().includes(searchTerm.toLowerCase()));
+
+    const categoryMatch = filters.category === '' || item.category === filters.category;
+    const experienceMatch = filters.experience === '' || item.experience === filters.experience;
+    const locationMatch = filters.location === '' || item.location.includes(filters.location);
+    const availabilityMatch = filters.availability === '' || item.availability === filters.availability;
+
     return searchMatch && categoryMatch && experienceMatch && locationMatch && availabilityMatch;
   });
 
   const handleFilterChange = (filterName: keyof typeof filters, value: string) => {
-    setFilters({
-      ...filters,
-      [filterName]: value
-    });
+    setFilters(prev => ({ ...prev, [filterName]: value }));
   };
 
   const handleClientRequirementChange = (field: keyof typeof clientRequirements, value: string) => {
-    setClientRequirements({
-      ...clientRequirements,
-      [field]: value
-    });
+    setClientRequirements(prev => ({ ...prev, [field]: value }));
   };
+
+  // Match tab: all talent sorted by score — never filtered by browse sidebar
+  const matchedTalent = [...talent].sort((a, b) => (b.matchScore ?? 0) - (a.matchScore ?? 0));
 
   const findMatches = () => {
-    // Calculate match scores based on client requirements
-    const updatedTalent = talent.map(talentItem => {
+    const scores: Record<string, number> = {};
+
+    for (const item of talent) {
       let score = 0;
-      
-      // Match category/position
-      if (clientRequirements.position && 
-          (talentItem.category.toLowerCase().includes(clientRequirements.position.toLowerCase()) ||
-           talentItem.skills.some(skill => skill.toLowerCase().includes(clientRequirements.position.toLowerCase())))) {
+
+      if (clientRequirements.position &&
+        (item.category.toLowerCase().includes(clientRequirements.position.toLowerCase()) ||
+          item.skills.some(s => s.toLowerCase().includes(clientRequirements.position.toLowerCase())))) {
         score += 30;
       }
-      
-      // Match experience level
-      if (clientRequirements.experienceLevel && talentItem.experience === clientRequirements.experienceLevel) {
-        score += 25;
-      }
-      
-      // Match location
-      if (clientRequirements.location && talentItem.location.toLowerCase().includes(clientRequirements.location.toLowerCase())) {
-        score += 20;
-      }
-      
-      // Match availability
-      if (clientRequirements.availability && talentItem.availability === clientRequirements.availability) {
-        score += 15;
-      }
-      
-      // Match specific skills
+      if (clientRequirements.experienceLevel && item.experience === clientRequirements.experienceLevel) score += 25;
+      if (clientRequirements.location && item.location.toLowerCase().includes(clientRequirements.location.toLowerCase())) score += 20;
+      if (clientRequirements.availability && item.availability === clientRequirements.availability) score += 15;
       if (clientRequirements.skills) {
-        const requiredSkills = clientRequirements.skills.toLowerCase().split(',').map(s => s.trim());
-        const matchedSkills = talentItem.skills.filter(skill => 
-          requiredSkills.some(reqSkill => skill.toLowerCase().includes(reqSkill))
-        );
-        
-        if (matchedSkills.length > 0) {
-          score += matchedSkills.length * 10;
-        }
+        const required = clientRequirements.skills.toLowerCase().split(',').map(s => s.trim()).filter(Boolean);
+        const matched = item.skills.filter(s => required.some(r => s.toLowerCase().includes(r)));
+        score += matched.length * 10;
       }
-      
-      return {
-        ...talentItem,
-        matchScore: score
-      };
-    });
-    
-    // Sort by match score
-    updatedTalent.sort((a, b) => b.matchScore - a.matchScore);
-    setTalent(updatedTalent);
-    setActiveTab('admin'); // Switch to admin view to see results
+
+      scores[item.id] = score;
+    }
+
+    setMatchScores(scores);
+    setHasRunMatch(true);
+    setActiveTab('admin');
   };
 
-  const handleUpdateStatus = (id: number, status: string) => {
-    const updatedTalent = talent.map(item => 
-      item.id === id ? { ...item, status } : item
-    );
-    setTalent(updatedTalent);
-  };
+  const exportData = () => {
+    const header = ['Name', 'Email', 'Specialization', 'Experience', 'Location', 'Availability', 'Skills'];
+    const rows = filteredTalent.map(t => [
+      t.name,
+      t.email,
+      t.category,
+      t.experience,
+      t.location,
+      t.availability,
+      t.skills.join('; ')
+    ]);
 
-  const handleUpdateNotes = (id: number, notes: string) => {
-    const updatedTalent = talent.map(item => 
-      item.id === id ? { ...item, notes } : item
-    );
-    setTalent(updatedTalent);
-  };
+    const csv = [header, ...rows]
+      .map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+      .join('\n');
 
-  const exportData = (format: 'csv' | 'pdf') => {
-    // This would be connected to actual export functionality
-    console.log(`Exporting data in ${format} format`);
-    alert(`Talent data would be exported as ${format.toUpperCase()} here.`);
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `cremetalent-export-${Date.now()}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   return {
@@ -198,17 +126,18 @@ export const useTalentPool = () => {
     setSearchTerm,
     filters,
     talent,
+    isLoading,
     clientRequirements,
     activeTab,
     setActiveTab,
     selectedTalentId,
     setSelectedTalentId,
     filteredTalent,
+    matchedTalent,
+    hasRunMatch,
     handleFilterChange,
     handleClientRequirementChange,
     findMatches,
-    handleUpdateStatus,
-    handleUpdateNotes,
-    exportData
+    exportData,
   };
 };
